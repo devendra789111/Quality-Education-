@@ -1,81 +1,87 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UPSC Creator</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <style>
-    body { background-color: #f7f9fc; }
-    nav button.active { border-bottom: 2px solid white; }
-    .correct { background-color: #d1fae5; }
-    .incorrect { background-color: #fee2e2; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPSC Creator - Full Functional Website</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+  body { background-color: #f7f9fc; }
+  nav button.active { border-bottom: 2px solid white; }
+</style>
 </head>
 <body class="font-sans text-gray-800">
-  <div class="max-w-6xl mx-auto p-4">
-    <h1 class="text-4xl font-extrabold text-center text-indigo-700 mb-6">UPSC Creator</h1>
-    <nav class="flex flex-wrap justify-center gap-3 mb-8">
-      <button class="tab-button" onclick="showSection('home')">Home</button>
-      <button class="tab-button" onclick="showSection('notes')">Notes</button>
-      <button class="tab-button" onclick="showSection('tests')">Test Series</button>
-      <button class="tab-button" onclick="showSection('blogs')">Blog/News</button>
-      <button class="tab-button" onclick="showSection('admin')">Admin Panel</button>
-    </nav><section id="home" class="section">
-  <div class="bg-white rounded-lg shadow p-6 text-center">
-    Welcome to <strong>UPSC Creator</strong> — Your complete offline UPSC preparation platform.
-  </div>
-</section>
+<div class="max-w-6xl mx-auto p-4">
+  <h1 class="text-4xl font-extrabold text-center text-indigo-700 mb-6">UPSC Creator</h1>
+  <nav class="flex flex-wrap justify-center gap-3 mb-8">
+    <button class="tab-button" onclick="showSection('home')">Home</button>
+    <button class="tab-button" onclick="showSection('notes')">Notes</button>
+    <button class="tab-button" onclick="showSection('tests')">Test Series</button>
+    <button class="tab-button" onclick="showSection('blogs')">Blog/News</button>
+    <button class="tab-button" onclick="showSection('admin')">Admin Panel</button>
+  </nav>
 
-<section id="notes" class="section hidden"></section>
-<section id="tests" class="section hidden">
-  <div id="testContainer"></div>
-  <div id="leaderboard" class="mt-6 p-4 bg-white rounded-lg shadow hidden">
-    <h2 class="text-2xl font-bold text-center mb-4">Test Summary</h2>
-    <p id="summary" class="text-lg"></p>
-  </div>
-</section>
-<section id="blogs" class="section hidden"></section>
-<section id="admin" class="section hidden">
-  <div class="text-center mb-4">
-    <input type="password" id="adminPass" placeholder="Admin Password" class="input" />
-    <button onclick="verifyAdmin()" class="btn-red">Login</button>
-  </div>
-  <div id="adminPanel" class="hidden">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <h3 class="text-lg font-semibold mb-2">Add Note</h3>
-        <input type="text" id="noteTitle" placeholder="Title" class="input">
-        <input type="text" id="noteSubject" placeholder="Subject" class="input">
-        <textarea id="noteContent" placeholder="Note Content" class="input"></textarea>
-        <button onclick="addNote()" class="btn-green">Add Note</button>
+  <section id="home" class="section">
+    <div class="bg-white rounded-lg shadow p-6 text-center">
+      Welcome to <strong>UPSC Creator</strong> — Your complete offline UPSC preparation platform.
+    </div>
+  </section>
+
+  <section id="notes" class="section hidden"></section>
+  <section id="tests" class="section hidden">
+    <div id="testContainer"></div>
+    <div id="leaderboard" class="mt-6 p-4 bg-white rounded-lg shadow hidden">
+      <h2 class="text-2xl font-bold text-center mb-4">Test Summary</h2>
+      <p id="summary" class="text-lg"></p>
+    </div>
+  </section>
+  <section id="blogs" class="section hidden"></section>
+  <section id="admin" class="section hidden">
+    <div class="text-center mb-4">
+      <input type="password" id="adminPass" placeholder="Admin Password" class="input" />
+      <button onclick="verifyAdmin()" class="btn-red">Login</button>
+    </div>
+    <div id="adminPanel" class="hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-lg font-semibold mb-2">Add Note</h3>
+          <input type="text" id="noteTitle" placeholder="Title" class="input">
+          <input type="text" id="noteSubject" placeholder="Subject" class="input">
+          <textarea id="noteContent" placeholder="Note Content" class="input"></textarea>
+          <button onclick="addNote()" class="btn-green">Add Note</button>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-2">Add Blog</h3>
+          <input type="text" id="blogTitle" placeholder="Title" class="input">
+          <textarea id="blogContent" placeholder="Content" class="input"></textarea>
+          <button onclick="addBlog()" class="btn-yellow">Add Blog</button>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-2">Add Test Question</h3>
+          <input type="text" id="qTitle" placeholder="Question" class="input">
+          <input type="text" id="opt1" placeholder="Option 1" class="input">
+          <input type="text" id="opt2" placeholder="Option 2" class="input">
+          <input type="text" id="opt3" placeholder="Option 3" class="input">
+          <input type="text" id="opt4" placeholder="Option 4" class="input">
+          <input type="number" id="correctAns" placeholder="Correct Option (0-3)" class="input">
+          <button onclick="addQuestion()" class="btn-purple">Add Question</button>
+        </div>
       </div>
-      <div>
-        <h3 class="text-lg font-semibold mb-2">Add Blog</h3>
-        <input type="text" id="blogTitle" placeholder="Title" class="input">
-        <textarea id="blogContent" placeholder="Content" class="input"></textarea>
-        <button onclick="addBlog()" class="btn-yellow">Add Blog</button>
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold mb-2">Add Test Question</h3>
-        <input type="text" id="qTitle" placeholder="Question" class="input">
-        <input type="text" id="opt1" placeholder="Option 1" class="input">
-        <input type="text" id="opt2" placeholder="Option 2" class="input">
-        <input type="text" id="opt3" placeholder="Option 3" class="input">
-        <input type="text" id="opt4" placeholder="Option 4" class="input">
-        <input type="number" id="correctAns" placeholder="Correct Option (0-3)" class="input">
-        <button onclick="addQuestion()" class="btn-purple">Add Question</button>
+      <div class="mt-6">
+        <h3 class="text-xl font-bold">Manage Content</h3>
+        <button onclick="clearAll()" class="btn-red mt-2">Clear All Data</button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+</div>
 
-  </div><script>
+<script>
 const notes = JSON.parse(localStorage.getItem('notes')) || [];
 const blogs = JSON.parse(localStorage.getItem('blogs')) || [];
 const tests = JSON.parse(localStorage.getItem('tests')) || [];
-
 let userAnswers = [];
 let testStartTime;
+let isAdmin = false;
 
 function showSection(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
@@ -94,9 +100,10 @@ function renderNotes() {
     <div class='bg-white p-5 shadow rounded mb-4'>
       <h4 class='font-semibold'>${n.title}</h4>
       <p>${n.subject}</p>
-      <button onclick="downloadPDF(\`${n.content}\`)" class='btn-indigo mt-2'>Download Notes (PDF)</button>
-      <button onclick="deleteNote(${idx})" class='btn-red mt-2 ml-2'>Delete Note</button>
-    </div>`).join('');
+      <button onclick="downloadPDF('${encodeURIComponent(n.content)}')" class='btn-indigo mt-2'>Download Notes</button>
+      ${isAdmin ? `<button onclick="deleteNote(${idx})" class='btn-red ml-2'>Delete</button>` : ''}
+    </div>
+  `).join('');
 }
 
 function renderBlogs() {
@@ -105,19 +112,21 @@ function renderBlogs() {
     <div class='bg-white p-5 shadow rounded mb-4'>
       <h4 class='font-semibold'>${b.title}</h4>
       <p>${b.content}</p>
-      <button onclick="deleteBlog(${idx})" class='btn-red mt-2'>Delete Blog</button>
-    </div>`).join('');
+      ${isAdmin ? `<button onclick="deleteBlog(${idx})" class='btn-red mt-2'>Delete</button>` : ''}
+    </div>
+  `).join('');
 }
 
 function renderTests() {
   const div = document.getElementById('testContainer');
   userAnswers = new Array(tests.length).fill(null);
   div.innerHTML = tests.map((t, i) => `
-    <div id='q${i}' class='bg-white p-5 shadow rounded mb-4'>
+    <div class='bg-white p-5 shadow rounded mb-4' id='q${i}'>
       <p class='font-semibold'>${t.q}</p>
       ${t.options.map((o, idx) => `<label class='block'><input type='radio' name='q${i}' onclick='selectAnswer(${i}, ${idx})'> ${o}</label>`).join('')}
-      <button onclick="deleteQuestion(${i})" class='btn-red mt-2'>Delete Question</button>
-    </div>`).join('') + `<div class='text-center'><button onclick='showResult()' class='btn-indigo'>Submit Test</button></div>`;
+      ${isAdmin ? `<button onclick='deleteQuestion(${i})' class='btn-red mt-2'>Delete</button>` : ''}
+    </div>`).join('') + `
+    <div class='text-center'><button onclick='showResult()' class='btn-indigo'>Submit Test</button></div>`;
 }
 
 function selectAnswer(qIdx, selected) {
@@ -130,21 +139,22 @@ function showResult() {
     const qDiv = document.getElementById(`q${i}`);
     if (ans === tests[i].answer) {
       correct++;
-      qDiv.classList.add('correct');
+      qDiv.classList.add('bg-green-100');
     } else if (ans !== null) {
       incorrect++;
-      qDiv.classList.add('incorrect');
+      qDiv.classList.add('bg-red-100');
     }
   });
   const timeTaken = Math.floor((new Date() - testStartTime) / 1000);
   const score = correct - (incorrect * (1/3));
   document.getElementById('leaderboard').classList.remove('hidden');
-  document.getElementById('summary').innerText = `कुल प्रश्न: ${tests.length}, सही उत्तर: ${correct}, गलत उत्तर: ${incorrect}, स्कोर: ${score.toFixed(2)}, समय लिया: ${timeTaken} सेकंड्स`;
+  document.getElementById('summary').innerText = `\nकुल प्रश्न: ${tests.length}, सही उत्तर: ${correct}, गलत उत्तर: ${incorrect}, स्कोर: ${score.toFixed(2)}, समय लिया: ${timeTaken} सेकंड्स`;
 }
 
 function verifyAdmin() {
   if (document.getElementById('adminPass').value === '1234') {
     document.getElementById('adminPanel').classList.remove('hidden');
+    isAdmin = true;
   } else {
     alert('Wrong password');
   }
@@ -155,6 +165,7 @@ function addNote() {
   localStorage.setItem('notes', JSON.stringify(notes));
   noteTitle.value = noteSubject.value = noteContent.value = '';
   alert('Note Added');
+  renderNotes();
 }
 
 function addBlog() {
@@ -162,6 +173,7 @@ function addBlog() {
   localStorage.setItem('blogs', JSON.stringify(blogs));
   blogTitle.value = blogContent.value = '';
   alert('Blog Added');
+  renderBlogs();
 }
 
 function addQuestion() {
@@ -169,38 +181,51 @@ function addQuestion() {
   localStorage.setItem('tests', JSON.stringify(tests));
   qTitle.value = opt1.value = opt2.value = opt3.value = opt4.value = correctAns.value = '';
   alert('Question Added');
+  renderTests();
+}
+
+function downloadPDF(content) {
+  const text = decodeURIComponent(content);
+  const blob = new Blob([text], {type: 'application/pdf'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Notes.pdf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function deleteNote(idx) {
-  notes.splice(idx, 1);
+  notes.splice(idx,1);
   localStorage.setItem('notes', JSON.stringify(notes));
   renderNotes();
 }
 
 function deleteBlog(idx) {
-  blogs.splice(idx, 1);
+  blogs.splice(idx,1);
   localStorage.setItem('blogs', JSON.stringify(blogs));
   renderBlogs();
 }
 
 function deleteQuestion(idx) {
-  tests.splice(idx, 1);
+  tests.splice(idx,1);
   localStorage.setItem('tests', JSON.stringify(tests));
   renderTests();
 }
 
-function downloadPDF(content) {
-  const blob = new Blob([content], {type: 'application/pdf'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'Notes.pdf';
-  a.click();
-  URL.revokeObjectURL(url);
+function clearAll() {
+  if(confirm('Are you sure to clear all data?')){
+    localStorage.clear();
+    location.reload();
+  }
 }
 
 showSection('home');
-</script><style>
+</script>
+
+<style>
 .tab-button { background: #4F46E5; color: white; padding: 10px 20px; border-radius: 10px; }
 .btn-red { background: #EF4444; color: white; padding: 8px 20px; border-radius: 8px; }
 .btn-green { background: #10B981; color: white; padding: 8px 20px; border-radius: 8px; }
@@ -208,5 +233,7 @@ showSection('home');
 .btn-purple { background: #8B5CF6; color: white; padding: 8px 20px; border-radius: 8px; }
 .btn-indigo { background: #6366F1; color: white; padding: 10px 30px; border-radius: 10px; }
 .input { border: 1px solid #CBD5E0; padding: 10px; width: 100%; margin-bottom: 10px; border-radius: 8px; }
-</style></body>
+</style>
+
+</body>
   </html>
