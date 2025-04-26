@@ -1,106 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Resume Maker + PDF Download</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      padding: 40px;
-      background: #f0f2f5;
-    }
-    #resume {
-      background: white;
-      padding: 30px;
-      max-width: 800px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1, h2 {
-      color: #2c3e50;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0 15px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-    }
-    button {
-      padding: 12px 25px;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    button:hover {
-      background: #45a049;
-    }
-    .section {
-      margin-bottom: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC Creator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f1f1f1; }
+        .container { width: 100%; max-width: 1200px; margin: auto; padding: 20px; }
+        h1, h2 { text-align: center; }
+        .button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        .button:hover { background-color: #45a049; }
+        .form-section { margin-top: 20px; }
+        .form-section input, .form-section button { padding: 10px; margin: 10px 0; width: 100%; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal-content { background-color: white; padding: 20px; margin: 10% auto; width: 80%; max-width: 600px; }
+        .btn-sm { padding: 8px 16px; font-size: 14px; margin: 5px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        .btn-sm:hover { background-color: #45a049; }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Welcome to UPSC Creator</h1>
+        <h2>Never Stop Learning</h2>
+        
+        <!-- Navigation Buttons -->
+        <button class="button" id="buyNotesBtn">Buy Notes</button>
+        <button class="button" id="upcomingVacancyBtn">Upcoming Vacancies</button>
+        <button class="button" id="examDatesBtn">Exam Dates</button>
+        <button class="button" id="youtubeBtn">YouTube Channel</button>
+        <button class="button" id="resultBtn">Result</button>
+        <button class="button" id="admitCardBtn">Admit Card</button>
+        <button class="button" id="applyOnlineTestBtn">UPSC Creator Online Test</button>
+        
+        <!-- Modal for Form Preview -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <h3>Preview Form</h3>
+                <div id="formPreview"></div>
+                <div class="flex">
+                    <button id="btnDownloadForm" class="btn-sm">Download Form PDF</button>
+                    <button id="btnEditForm" class="btn-sm">Edit Form</button>
+                    <button id="btnDownloadAdmit" class="btn-sm">Download Admit Card</button>
+                </div>
+                <button id="closeModal" class="btn-sm">Close</button>
+            </div>
+        </div>
+    </div>
 
-<h1>Create Your Resume</h1>
+    <script>
+        // Dummy data for notes
+        const notes = [
+            { id: 1, title: "UPSC General Studies Notes" },
+            { id: 2, title: "UPSC Economics Notes" },
+            { id: 3, title: "UPSC History Notes" },
+        ];
 
-<div id="form">
-  <input type="text" id="name" placeholder="Your Name">
-  <input type="text" id="email" placeholder="Your Email">
-  <input type="text" id="phone" placeholder="Your Phone Number">
-  <textarea id="skills" placeholder="Your Skills (comma separated)"></textarea>
-  <textarea id="experience" placeholder="Work Experience"></textarea>
-  <textarea id="education" placeholder="Education"></textarea>
-  <button onclick="generateResume()">Update Resume Preview</button>
-</div>
+        // Show Modal for Buy Notes
+        document.getElementById("buyNotesBtn").addEventListener("click", () => {
+            alert("Redirecting to Buy Notes page.");
+            // You can implement the page redirection here
+        });
 
-<div id="resume" style="margin-top:40px;">
-  <h1 id="r-name">Your Name</h1>
-  <p id="r-email">Email: example@mail.com</p>
-  <p id="r-phone">Phone: 1234567890</p>
+        // Upcoming Vacancies
+        document.getElementById("upcomingVacancyBtn").addEventListener("click", () => {
+            alert("Displaying Upcoming Vacancies.");
+            // Show vacancies data here
+        });
 
-  <div class="section">
-    <h2>Skills</h2>
-    <p id="r-skills">List of skills</p>
-  </div>
+        // Exam Dates
+        document.getElementById("examDatesBtn").addEventListener("click", () => {
+            alert("Displaying Upcoming Exam Dates.");
+            // Show exam dates here
+        });
 
-  <div class="section">
-    <h2>Experience</h2>
-    <p id="r-experience">Your work experience</p>
-  </div>
+        // YouTube Channel
+        document.getElementById("youtubeBtn").addEventListener("click", () => {
+            window.open("https://www.youtube.com/channel/yourchannel", "_blank");
+        });
 
-  <div class="section">
-    <h2>Education</h2>
-    <p id="r-education">Your education details</p>
-  </div>
-</div>
+        // Result
+        document.getElementById("resultBtn").addEventListener("click", () => {
+            alert("Showing Latest Result.");
+            // Show result data here
+        });
 
-<button onclick="downloadPDF()">Download Resume as PDF</button>
+        // Admit Card
+        document.getElementById("admitCardBtn").addEventListener("click", () => {
+            alert("Showing Admit Card details.");
+            // Show admit card data here
+        });
 
-<script>
-function generateResume() {
-  document.getElementById('r-name').innerText = document.getElementById('name').value;
-  document.getElementById('r-email').innerText = "Email: " + document.getElementById('email').value;
-  document.getElementById('r-phone').innerText = "Phone: " + document.getElementById('phone').value;
-  document.getElementById('r-skills').innerText = document.getElementById('skills').value;
-  document.getElementById('r-experience').innerText = document.getElementById('experience').value;
-  document.getElementById('r-education').innerText = document.getElementById('education').value;
-}
+        // Apply for Online Test
+        document.getElementById("applyOnlineTestBtn").addEventListener("click", () => {
+            showApplyForm();
+        });
 
-function downloadPDF() {
-  var element = document.getElementById('resume');
-  html2pdf().from(element).set({
-    margin: 1,
-    filename: 'My_Resume.pdf',
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-  }).save();
-}
-</script>
+        // Show Apply Form Modal
+        function showApplyForm() {
+            const formHTML = `
+                <div class="form-section">
+                    <input type="text" id="name" placeholder="Enter Name">
+                    <input type="text" id="mobile" placeholder="Enter Mobile">
+                    <input type="date" id="dob" placeholder="Enter Date of Birth">
+                    <input type="text" id="city" placeholder="Enter City">
+                    <input type="text" id="district" placeholder="Enter District">
+                    <input type="text" id="state" placeholder="Enter State">
+                    <input type="file" id="photo" accept="image/*" placeholder="Upload Photo">
+                    <input type="file" id="signature" accept="image/*" placeholder="Upload Signature">
+                    <button id="submitForm" class="button">Submit</button>
+                </div>
+            `;
+            document.getElementById('formPreview').innerHTML = formHTML;
+            document.getElementById("modal").style.display = "block";
 
+            document.getElementById("submitForm").addEventListener("click", () => {
+                const name = document.getElementById("name").value;
+                const mobile = document.getElementById("mobile").value;
+                const dob = document.getElementById("dob").value;
+                const city = document.getElementById("city").value;
+                const district = document.getElementById("district").value;
+                const state = document.getElementById("state").value;
+                const photo = document.getElementById("photo").files[0];
+                const signature = document.getElementById("signature").files[0];
+                
+                const formData = { name, mobile, dob, city, district, state, photo, signature };
+                const registrationNumber = Math.floor(Math.random() * 1000000);
+                
+                previewForm(formData, registrationNumber);
+            });
+        }
+
+        // Show Form Preview
+        function previewForm(data, registrationNumber) {
+            const previewHTML = `
+                <p>Name: ${data.name}</p>
+                <p>Mobile: ${data.mobile}</p>
+                <p>Date of Birth: ${data.dob}</p>
+                <p>City: ${data.city}</p>
+                <p>District: ${data.district}</p>
+                <p>State: ${data.state}</p>
+                <p>Registration Number: ${registrationNumber}</p>
+                <img src="${URL.createObjectURL(data.photo)}" alt="Photo" style="width: 100px; height: 100px;">
+                <img src="${URL.createObjectURL(data.signature)}" alt="Signature" style="width: 100px; height: 100px;">
+            `;
+            document.getElementById('formPreview').innerHTML = previewHTML;
+            document.getElementById("btnDownloadForm").addEventListener("click", () => downloadForm());
+            document.getElementById("btnDownloadAdmit").addEventListener("click", () => downloadAdmitCard());
+            document.getElementById("btnEditForm").addEventListener("click", () => showApplyForm());
+        }
+
+        // Download Form as PDF (Dummy for now)
+        function downloadForm() {
+            alert("Form downloaded as PDF (Dummy).");
+        }
+
+        // Download Admit Card (Dummy for now)
+        function downloadAdmitCard() {
+            alert("Admit Card downloaded (Dummy).");
+        }
+
+        // Close Modal
+        document.getElementById("closeModal").addEventListener("click", () => {
+            document.getElementById("modal").style.display = "none";
+        });
+    </script>
 </body>
 </html>
