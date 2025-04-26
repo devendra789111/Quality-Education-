@@ -1,74 +1,78 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UPSC Creator</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-white text-gray-800 font-sans">
-  <div class="max-w-5xl mx-auto p-4">
-    <h1 class="text-4xl font-bold text-center text-blue-600 mb-6">UPSC Creator</h1><nav class="flex justify-center gap-4 mb-6">
-  <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('home')">Home</button>
-  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('notes')">Notes</button>
-  <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('tests')">Test Series</button>
-  <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('blogs')">Blog/News</button>
-  <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('admin')">Admin Panel</button>
-</nav>
+<body class="bg-gray-100 text-gray-800 font-sans">
+  <div class="max-w-6xl mx-auto p-4">
+    <h1 class="text-5xl font-extrabold text-center text-indigo-600 mb-10">UPSC Creator</h1>
 
-<section id="home" class="section">
-  <div class="bg-blue-50 p-4 rounded shadow">Welcome to <strong>UPSC Creator</strong> — Your offline UPSC preparation companion.</div>
-</section>
+    <nav class="flex flex-wrap justify-center gap-4 mb-10">
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('home')">Home</button>
+      <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('notes')">Notes</button>
+      <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('tests')">Test Series</button>
+      <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('blogs')">Blog/News</button>
+      <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('admin')">Admin Panel</button>
+    </nav>
 
-<section id="notes" class="section hidden"></section>
-<section id="tests" class="section hidden">
-  <div id="testContainer"></div>
-  <div id="leaderboard" class="mt-6 p-4 bg-gray-100 rounded shadow hidden">
-    <h2 class="text-xl font-bold mb-2">Test Summary</h2>
-    <p id="summary"></p>
-  </div>
-</section>
-<section id="blogs" class="section hidden"></section>
+    <section id="home" class="section">
+      <div class="bg-white p-8 rounded shadow text-center">Welcome to <strong>UPSC Creator</strong> — Your complete offline UPSC preparation tool.</div>
+    </section>
 
-<section id="admin" class="section hidden">
-  <div class="mb-4">
-    <input type="password" id="adminPass" placeholder="Enter Admin Password" class="border rounded px-3 py-2 mr-2">
-    <button class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded" onclick="verifyAdmin()">Login</button>
-  </div>
-  <div id="adminPanel" class="hidden">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <h3 class="text-lg font-semibold">Add Note</h3>
-        <input type="text" id="noteTitle" placeholder="Title" class="border w-full px-2 py-1 my-1">
-        <input type="text" id="noteSubject" placeholder="Subject" class="border w-full px-2 py-1 my-1">
-        <input type="text" id="noteLink" placeholder="Link" class="border w-full px-2 py-1 my-1">
-        <button class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded" onclick="addNote()">Add Note</button>
+    <section id="notes" class="section hidden"></section>
+    <section id="tests" class="section hidden">
+      <div id="testContainer"></div>
+      <div id="leaderboard" class="mt-6 p-4 bg-white rounded shadow hidden">
+        <h2 class="text-2xl font-bold mb-4 text-center">Test Summary</h2>
+        <p id="summary" class="text-lg"></p>
       </div>
+    </section>
+    <section id="blogs" class="section hidden"></section>
 
-      <div>
-        <h3 class="text-lg font-semibold">Add Blog</h3>
-        <input type="text" id="blogTitle" placeholder="Title" class="border w-full px-2 py-1 my-1">
-        <input type="text" id="blogContent" placeholder="Content" class="border w-full px-2 py-1 my-1">
-        <button class="bg-yellow-600 hover:bg-yellow-800 text-white px-4 py-2 rounded" onclick="addBlog()">Add Blog</button>
+    <section id="admin" class="section hidden">
+      <div class="mb-4 text-center">
+        <input type="password" id="adminPass" placeholder="Enter Admin Password" class="border rounded px-3 py-2 mr-2">
+        <button class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded" onclick="verifyAdmin()">Login</button>
       </div>
+      <div id="adminPanel" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="text-lg font-semibold mb-2">Add Note</h3>
+            <input type="text" id="noteTitle" placeholder="Title" class="border w-full px-3 py-2 mb-2">
+            <input type="text" id="noteSubject" placeholder="Subject" class="border w-full px-3 py-2 mb-2">
+            <input type="text" id="noteLink" placeholder="Link" class="border w-full px-3 py-2 mb-2">
+            <button class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded w-full" onclick="addNote()">Add Note</button>
+          </div>
 
-      <div class="md:col-span-2">
-        <h3 class="text-lg font-semibold">Add Test Question</h3>
-        <input type="text" id="qTitle" placeholder="Question" class="border w-full px-2 py-1 my-1">
-        <input type="text" id="opt1" placeholder="Option 1" class="border w-full px-2 py-1 my-1">
-        <input type="text" id="opt2" placeholder="Option 2" class="border w-full px-2 py-1 my-1">
-        <input type="text" id="opt3" placeholder="Option 3" class="border w-full px-2 py-1 my-1">
-        <input type="text" id="opt4" placeholder="Option 4" class="border w-full px-2 py-1 my-1">
-        <input type="number" id="correctAns" placeholder="Correct Option (0-3)" class="border w-full px-2 py-1 my-1">
-        <button class="bg-purple-600 hover:bg-purple-800 text-white px-4 py-2 rounded" onclick="addQuestion()">Add Question</button>
+          <div>
+            <h3 class="text-lg font-semibold mb-2">Add Blog</h3>
+            <input type="text" id="blogTitle" placeholder="Title" class="border w-full px-3 py-2 mb-2">
+            <textarea id="blogContent" placeholder="Content" class="border w-full px-3 py-2 mb-2"></textarea>
+            <button class="bg-yellow-600 hover:bg-yellow-800 text-white px-4 py-2 rounded w-full" onclick="addBlog()">Add Blog</button>
+          </div>
+
+          <div class="md:col-span-2">
+            <h3 class="text-lg font-semibold mb-2">Add Test Question</h3>
+            <input type="text" id="qTitle" placeholder="Question" class="border w-full px-3 py-2 mb-2">
+            <input type="text" id="opt1" placeholder="Option 1" class="border w-full px-3 py-2 mb-2">
+            <input type="text" id="opt2" placeholder="Option 2" class="border w-full px-3 py-2 mb-2">
+            <input type="text" id="opt3" placeholder="Option 3" class="border w-full px-3 py-2 mb-2">
+            <input type="text" id="opt4" placeholder="Option 4" class="border w-full px-3 py-2 mb-2">
+            <input type="number" id="correctAns" placeholder="Correct Option (0-3)" class="border w-full px-3 py-2 mb-2">
+            <button class="bg-purple-600 hover:bg-purple-800 text-white px-4 py-2 rounded w-full" onclick="addQuestion()">Add Question</button>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   </div>
-</section>
 
-  </div>  <script>
-    const notes = JSON.parse(localStorage.getItem('notes') || '[]');
-    const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
-    const tests = JSON.parse(localStorage.getItem('tests') || '[]');
+  <script>
+    const notes = JSON.parse(localStorage.getItem('notes') || '[{"title":"Indian Polity - Basics","subject":"Polity","link":"https://example.com/polity-basics.pdf"}]');
+    const blogs = JSON.parse(localStorage.getItem('blogs') || '[{"title":"UPSC 2025 Latest Update","content":"UPSC 2025 exam notification released! Check your eligibility and syllabus now."}]');
+    const tests = JSON.parse(localStorage.getItem('tests') || '[{"q":"Who is the father of Indian Constitution?","options":["Mahatma Gandhi","B.R. Ambedkar","Jawaharlal Nehru","Subhash Chandra Bose"],"answer":1}]');
     let userAnswers = [];
     let testStartTime;
 
@@ -86,15 +90,15 @@
     function renderNotes() {
       const div = document.getElementById('notes');
       div.innerHTML = notes.map(n => `
-        <div class='bg-white p-4 shadow rounded mb-4'>
-          <strong>${n.title}</strong> — ${n.subject} <br><a href='${n.link}' class='text-blue-500 underline' download>Download</a>
+        <div class='bg-white p-6 shadow rounded mb-6'>
+          <strong>${n.title}</strong> — ${n.subject} <br><a href='${n.link}' class='text-blue-500 underline' download>Download Note</a>
         </div>`).join('');
     }
 
     function renderBlogs() {
       const div = document.getElementById('blogs');
       div.innerHTML = blogs.map(b => `
-        <div class='bg-white p-4 shadow rounded mb-4'>
+        <div class='bg-white p-6 shadow rounded mb-6'>
           <strong>${b.title}</strong>
           <p>${b.content}</p>
         </div>`).join('');
@@ -104,11 +108,11 @@
       const div = document.getElementById('testContainer');
       userAnswers = new Array(tests.length).fill(null);
       div.innerHTML = tests.map((t, i) => `
-        <div class='bg-white p-4 shadow rounded mb-4'>
+        <div class='bg-white p-6 shadow rounded mb-6'>
           <p><strong>${t.q}</strong></p>
-          ${t.options.map((o, idx) => `<label class='block'><input type='radio' name='q${i}' onclick='selectAnswer(${i}, ${idx})'> ${o}</label>`).join('')}
+          ${t.options.map((o, idx) => `<label class='block mt-2'><input type='radio' name='q${i}' onclick='selectAnswer(${i}, ${idx})'> ${o}</label>`).join('')}
         </div>`).join('') + `
-        <button class='bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded' onclick='showResult()'>Submit</button>`;
+        <div class='text-center'><button class='bg-indigo-600 hover:bg-indigo-800 text-white px-6 py-3 rounded mt-6' onclick='showResult()'>Submit Test</button></div>`;
     }
 
     function selectAnswer(qIdx, selected) {
@@ -123,7 +127,7 @@
       });
       const timeTaken = Math.floor((new Date() - testStartTime) / 1000);
       const score = correct - (incorrect * (1 / 3));
-      const summary = `Total: ${tests.length}, Correct: ${correct}, Incorrect: ${incorrect}, Score: ${score.toFixed(2)}, Time: ${timeTaken} sec`;
+      const summary = `Total Questions: ${tests.length}, Correct: ${correct}, Incorrect: ${incorrect}, Score (with -1/3 marking): ${score.toFixed(2)}, Time Taken: ${timeTaken} sec`;
       document.getElementById('leaderboard').classList.remove('hidden');
       document.getElementById('summary').innerText = summary;
     }
@@ -159,5 +163,6 @@
     }
 
     showSection('home');
-  </script></body>
-</html>
+  </script>
+</body>
+  </html>
