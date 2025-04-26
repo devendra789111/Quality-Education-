@@ -1,168 +1,163 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UPSC Creator</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f1f1f1; }
-        .container { width: 100%; max-width: 1200px; margin: auto; padding: 20px; }
-        h1, h2 { text-align: center; }
-        .button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
-        .button:hover { background-color: #45a049; }
-        .form-section { margin-top: 20px; }
-        .form-section input, .form-section button { padding: 10px; margin: 10px 0; width: 100%; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; }
-        .modal-content { background-color: white; padding: 20px; margin: 10% auto; width: 80%; max-width: 600px; }
-        .btn-sm { padding: 8px 16px; font-size: 14px; margin: 5px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
-        .btn-sm:hover { background-color: #45a049; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UPSC Creator</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h1>Welcome to UPSC Creator</h1>
-        <h2>Never Stop Learning</h2>
-        
-        <!-- Navigation Buttons -->
-        <button class="button" id="buyNotesBtn">Buy Notes</button>
-        <button class="button" id="upcomingVacancyBtn">Upcoming Vacancies</button>
-        <button class="button" id="examDatesBtn">Exam Dates</button>
-        <button class="button" id="youtubeBtn">YouTube Channel</button>
-        <button class="button" id="resultBtn">Result</button>
-        <button class="button" id="admitCardBtn">Admit Card</button>
-        <button class="button" id="applyOnlineTestBtn">UPSC Creator Online Test</button>
-        
-        <!-- Modal for Form Preview -->
-        <div id="modal" class="modal">
-            <div class="modal-content">
-                <h3>Preview Form</h3>
-                <div id="formPreview"></div>
-                <div class="flex">
-                    <button id="btnDownloadForm" class="btn-sm">Download Form PDF</button>
-                    <button id="btnEditForm" class="btn-sm">Edit Form</button>
-                    <button id="btnDownloadAdmit" class="btn-sm">Download Admit Card</button>
-                </div>
-                <button id="closeModal" class="btn-sm">Close</button>
-            </div>
-        </div>
+<body class="bg-white text-gray-800 font-sans">
+  <div class="max-w-5xl mx-auto p-4">
+    <h1 class="text-4xl font-bold text-center text-blue-600 mb-6">UPSC Creator</h1><nav class="flex justify-center gap-4 mb-6">
+  <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('home')">Home</button>
+  <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('notes')">Notes</button>
+  <button class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('tests')">Test Series</button>
+  <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('blogs')">Blog/News</button>
+  <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onclick="showSection('admin')">Admin Panel</button>
+</nav>
+
+<section id="home" class="section">
+  <div class="bg-blue-50 p-4 rounded shadow">Welcome to <strong>UPSC Creator</strong> — Your offline UPSC preparation companion.</div>
+</section>
+
+<section id="notes" class="section hidden"></section>
+<section id="tests" class="section hidden">
+  <div id="testContainer"></div>
+  <div id="leaderboard" class="mt-6 p-4 bg-gray-100 rounded shadow hidden">
+    <h2 class="text-xl font-bold mb-2">Test Summary</h2>
+    <p id="summary"></p>
+  </div>
+</section>
+<section id="blogs" class="section hidden"></section>
+
+<section id="admin" class="section hidden">
+  <div class="mb-4">
+    <input type="password" id="adminPass" placeholder="Enter Admin Password" class="border rounded px-3 py-2 mr-2">
+    <button class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded" onclick="verifyAdmin()">Login</button>
+  </div>
+  <div id="adminPanel" class="hidden">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <h3 class="text-lg font-semibold">Add Note</h3>
+        <input type="text" id="noteTitle" placeholder="Title" class="border w-full px-2 py-1 my-1">
+        <input type="text" id="noteSubject" placeholder="Subject" class="border w-full px-2 py-1 my-1">
+        <input type="text" id="noteLink" placeholder="Link" class="border w-full px-2 py-1 my-1">
+        <button class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded" onclick="addNote()">Add Note</button>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-semibold">Add Blog</h3>
+        <input type="text" id="blogTitle" placeholder="Title" class="border w-full px-2 py-1 my-1">
+        <input type="text" id="blogContent" placeholder="Content" class="border w-full px-2 py-1 my-1">
+        <button class="bg-yellow-600 hover:bg-yellow-800 text-white px-4 py-2 rounded" onclick="addBlog()">Add Blog</button>
+      </div>
+
+      <div class="md:col-span-2">
+        <h3 class="text-lg font-semibold">Add Test Question</h3>
+        <input type="text" id="qTitle" placeholder="Question" class="border w-full px-2 py-1 my-1">
+        <input type="text" id="opt1" placeholder="Option 1" class="border w-full px-2 py-1 my-1">
+        <input type="text" id="opt2" placeholder="Option 2" class="border w-full px-2 py-1 my-1">
+        <input type="text" id="opt3" placeholder="Option 3" class="border w-full px-2 py-1 my-1">
+        <input type="text" id="opt4" placeholder="Option 4" class="border w-full px-2 py-1 my-1">
+        <input type="number" id="correctAns" placeholder="Correct Option (0-3)" class="border w-full px-2 py-1 my-1">
+        <button class="bg-purple-600 hover:bg-purple-800 text-white px-4 py-2 rounded" onclick="addQuestion()">Add Question</button>
+      </div>
     </div>
+  </div>
+</section>
 
-    <script>
-        // Dummy data for notes
-        const notes = [
-            { id: 1, title: "UPSC General Studies Notes" },
-            { id: 2, title: "UPSC Economics Notes" },
-            { id: 3, title: "UPSC History Notes" },
-        ];
+  </div>  <script>
+    const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+    const blogs = JSON.parse(localStorage.getItem('blogs') || '[]');
+    const tests = JSON.parse(localStorage.getItem('tests') || '[]');
+    let userAnswers = [];
+    let testStartTime;
 
-        // Show Modal for Buy Notes
-        document.getElementById("buyNotesBtn").addEventListener("click", () => {
-            alert("Redirecting to Buy Notes page.");
-            // You can implement the page redirection here
-        });
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+      if (id === 'notes') renderNotes();
+      if (id === 'blogs') renderBlogs();
+      if (id === 'tests') {
+        renderTests();
+        testStartTime = new Date();
+      }
+    }
 
-        // Upcoming Vacancies
-        document.getElementById("upcomingVacancyBtn").addEventListener("click", () => {
-            alert("Displaying Upcoming Vacancies.");
-            // Show vacancies data here
-        });
+    function renderNotes() {
+      const div = document.getElementById('notes');
+      div.innerHTML = notes.map(n => `
+        <div class='bg-white p-4 shadow rounded mb-4'>
+          <strong>${n.title}</strong> — ${n.subject} <br><a href='${n.link}' class='text-blue-500 underline' download>Download</a>
+        </div>`).join('');
+    }
 
-        // Exam Dates
-        document.getElementById("examDatesBtn").addEventListener("click", () => {
-            alert("Displaying Upcoming Exam Dates.");
-            // Show exam dates here
-        });
+    function renderBlogs() {
+      const div = document.getElementById('blogs');
+      div.innerHTML = blogs.map(b => `
+        <div class='bg-white p-4 shadow rounded mb-4'>
+          <strong>${b.title}</strong>
+          <p>${b.content}</p>
+        </div>`).join('');
+    }
 
-        // YouTube Channel
-        document.getElementById("youtubeBtn").addEventListener("click", () => {
-            window.open("https://www.youtube.com/channel/yourchannel", "_blank");
-        });
+    function renderTests() {
+      const div = document.getElementById('testContainer');
+      userAnswers = new Array(tests.length).fill(null);
+      div.innerHTML = tests.map((t, i) => `
+        <div class='bg-white p-4 shadow rounded mb-4'>
+          <p><strong>${t.q}</strong></p>
+          ${t.options.map((o, idx) => `<label class='block'><input type='radio' name='q${i}' onclick='selectAnswer(${i}, ${idx})'> ${o}</label>`).join('')}
+        </div>`).join('') + `
+        <button class='bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded' onclick='showResult()'>Submit</button>`;
+    }
 
-        // Result
-        document.getElementById("resultBtn").addEventListener("click", () => {
-            alert("Showing Latest Result.");
-            // Show result data here
-        });
+    function selectAnswer(qIdx, selected) {
+      userAnswers[qIdx] = selected;
+    }
 
-        // Admit Card
-        document.getElementById("admitCardBtn").addEventListener("click", () => {
-            alert("Showing Admit Card details.");
-            // Show admit card data here
-        });
+    function showResult() {
+      let correct = 0, incorrect = 0;
+      userAnswers.forEach((ans, i) => {
+        if (ans === tests[i].answer) correct++;
+        else if (ans !== null) incorrect++;
+      });
+      const timeTaken = Math.floor((new Date() - testStartTime) / 1000);
+      const score = correct - (incorrect * (1 / 3));
+      const summary = `Total: ${tests.length}, Correct: ${correct}, Incorrect: ${incorrect}, Score: ${score.toFixed(2)}, Time: ${timeTaken} sec`;
+      document.getElementById('leaderboard').classList.remove('hidden');
+      document.getElementById('summary').innerText = summary;
+    }
 
-        // Apply for Online Test
-        document.getElementById("applyOnlineTestBtn").addEventListener("click", () => {
-            showApplyForm();
-        });
+    function verifyAdmin() {
+      const pass = document.getElementById('adminPass').value;
+      if (pass === '1234') {
+        document.getElementById('adminPanel').classList.remove('hidden');
+      } else {
+        alert('Wrong password');
+      }
+    }
 
-        // Show Apply Form Modal
-        function showApplyForm() {
-            const formHTML = `
-                <div class="form-section">
-                    <input type="text" id="name" placeholder="Enter Name">
-                    <input type="text" id="mobile" placeholder="Enter Mobile">
-                    <input type="date" id="dob" placeholder="Enter Date of Birth">
-                    <input type="text" id="city" placeholder="Enter City">
-                    <input type="text" id="district" placeholder="Enter District">
-                    <input type="text" id="state" placeholder="Enter State">
-                    <input type="file" id="photo" accept="image/*" placeholder="Upload Photo">
-                    <input type="file" id="signature" accept="image/*" placeholder="Upload Signature">
-                    <button id="submitForm" class="button">Submit</button>
-                </div>
-            `;
-            document.getElementById('formPreview').innerHTML = formHTML;
-            document.getElementById("modal").style.display = "block";
+    function addNote() {
+      notes.push({ title: noteTitle.value, subject: noteSubject.value, link: noteLink.value });
+      localStorage.setItem('notes', JSON.stringify(notes));
+      noteTitle.value = noteSubject.value = noteLink.value = '';
+      alert('Note Added');
+    }
 
-            document.getElementById("submitForm").addEventListener("click", () => {
-                const name = document.getElementById("name").value;
-                const mobile = document.getElementById("mobile").value;
-                const dob = document.getElementById("dob").value;
-                const city = document.getElementById("city").value;
-                const district = document.getElementById("district").value;
-                const state = document.getElementById("state").value;
-                const photo = document.getElementById("photo").files[0];
-                const signature = document.getElementById("signature").files[0];
-                
-                const formData = { name, mobile, dob, city, district, state, photo, signature };
-                const registrationNumber = Math.floor(Math.random() * 1000000);
-                
-                previewForm(formData, registrationNumber);
-            });
-        }
+    function addBlog() {
+      blogs.push({ title: blogTitle.value, content: blogContent.value });
+      localStorage.setItem('blogs', JSON.stringify(blogs));
+      blogTitle.value = blogContent.value = '';
+      alert('Blog Added');
+    }
 
-        // Show Form Preview
-        function previewForm(data, registrationNumber) {
-            const previewHTML = `
-                <p>Name: ${data.name}</p>
-                <p>Mobile: ${data.mobile}</p>
-                <p>Date of Birth: ${data.dob}</p>
-                <p>City: ${data.city}</p>
-                <p>District: ${data.district}</p>
-                <p>State: ${data.state}</p>
-                <p>Registration Number: ${registrationNumber}</p>
-                <img src="${URL.createObjectURL(data.photo)}" alt="Photo" style="width: 100px; height: 100px;">
-                <img src="${URL.createObjectURL(data.signature)}" alt="Signature" style="width: 100px; height: 100px;">
-            `;
-            document.getElementById('formPreview').innerHTML = previewHTML;
-            document.getElementById("btnDownloadForm").addEventListener("click", () => downloadForm());
-            document.getElementById("btnDownloadAdmit").addEventListener("click", () => downloadAdmitCard());
-            document.getElementById("btnEditForm").addEventListener("click", () => showApplyForm());
-        }
+    function addQuestion() {
+      tests.push({ q: qTitle.value, options: [opt1.value, opt2.value, opt3.value, opt4.value], answer: Number(correctAns.value) });
+      localStorage.setItem('tests', JSON.stringify(tests));
+      qTitle.value = opt1.value = opt2.value = opt3.value = opt4.value = correctAns.value = '';
+      alert('Question Added');
+    }
 
-        // Download Form as PDF (Dummy for now)
-        function downloadForm() {
-            alert("Form downloaded as PDF (Dummy).");
-        }
-
-        // Download Admit Card (Dummy for now)
-        function downloadAdmitCard() {
-            alert("Admit Card downloaded (Dummy).");
-        }
-
-        // Close Modal
-        document.getElementById("closeModal").addEventListener("click", () => {
-            document.getElementById("modal").style.display = "none";
-        });
-    </script>
-</body>
+    showSection('home');
+  </script></body>
 </html>
