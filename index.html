@@ -1,465 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Customer Query Manager</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <title>Resume Maker + PDF Download</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     body {
-      background: linear-gradient(to right, #e0eafc, #cfdef3);
-      padding: 20px;
+      font-family: 'Arial', sans-serif;
+      padding: 40px;
+      background: #f0f2f5;
     }
-    .container {
-      max-width: 900px;
-      margin: auto;
+    #resume {
       background: white;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      position: relative;
+      max-width: 800px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    .headline {
-      font-size: 2.5rem;
-      font-weight: bold;
-      text-align: center;
+    h1, h2 {
+      color: #2c3e50;
     }
-    .headline span.q {
-      color: #FF9933;
-    }
-    .headline span.e {
-      color: #2E8B57;
-    }
-    .subheadline {
-      font-size: 1.2rem;
-      text-align: center;
-      margin-bottom: 20px;
-      color: #555;
-    }
-    .ticket-count {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #007bff;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-weight: bold;
-      z-index: 1000;
-    }
-    .employee-badge {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: #ffffff;
-      border-radius: 10px;
-      padding: 10px 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 1000;
-      cursor: pointer;
-    }
-    .employee-badge i {
-      font-size: 1.5rem;
-      color: #007bff;
-    }
-    .employee-badge .name {
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-    .employee-badge .designation {
-      font-size: 0.9rem;
-      color: #555;
-    }
-    .frequent-number {
-      position: fixed;
-      top: 60px;
-      right: 10px;
-      background: #ffc107;
+    input, textarea {
+      width: 100%;
       padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      font-weight: bold;
-      z-index: 1000;
+      margin: 5px 0 15px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 12px 25px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      font-size: 18px;
       cursor: pointer;
+      margin-top: 20px;
     }
-    .hidden-time {
-      display: none;
+    button:hover {
+      background: #45a049;
     }
-    .slide-panel {
-      position: fixed;
-      left: -300px;
-      top: 60px;
-      width: 250px;
-      background: #fff;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-      padding: 20px;
-      transition: 0.3s;
-      z-index: 1001;
-    }
-    .slide-panel.active {
-      left: 10px;
-    }
-    .modal-bg {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 2000;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      width: 300px;
+    .section {
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <!-- Telecaller badge -->
-  <div class="employee-badge" onclick="togglePanel()">
-    <i class="fas fa-user-headset"></i>
-    <div>
-      <div class="name">Devendra Kumar</div>
-      <div class="designation">Telecaller</div>
-    </div>
+
+<h1>Create Your Resume</h1>
+
+<div id="form">
+  <input type="text" id="name" placeholder="Your Name">
+  <input type="text" id="email" placeholder="Your Email">
+  <input type="text" id="phone" placeholder="Your Phone Number">
+  <textarea id="skills" placeholder="Your Skills (comma separated)"></textarea>
+  <textarea id="experience" placeholder="Work Experience"></textarea>
+  <textarea id="education" placeholder="Education"></textarea>
+  <button onclick="generateResume()">Update Resume Preview</button>
+</div>
+
+<div id="resume" style="margin-top:40px;">
+  <h1 id="r-name">Your Name</h1>
+  <p id="r-email">Email: example@mail.com</p>
+  <p id="r-phone">Phone: 1234567890</p>
+
+  <div class="section">
+    <h2>Skills</h2>
+    <p id="r-skills">List of skills</p>
   </div>
 
-  <!-- Slide panel -->
-  <div class="slide-panel" id="panel">
-    <h5>Employee Panel</h5>
-    <button class="btn btn-sm btn-primary mb-2" onclick="location.reload()">Home</button>
-    <p><strong>1 महीने में क्लोज़ टिकट:</strong> <span id="closedCount">0</span></p>
-    <button class="btn btn-sm btn-warning" onclick="openLeaveForm()">Leave Application</button>
+  <div class="section">
+    <h2>Experience</h2>
+    <p id="r-experience">Your work experience</p>
   </div>
 
-  <!-- Leave Modal -->
-  <div class="modal-bg" id="leaveModal">
-    <div class="modal-content">
-      <h5>Leave Application</h5>
-      <form onsubmit="submitLeaveForm(event)">
-        <div class="mb-2">
-          <label>नाम:</label>
-          <input type="text" class="form-control" id="leaveName" required />
-        </div>
-        <div class="mb-2">
-          <label>तारीख:</label>
-          <input type="date" class="form-control" id="leaveDate" required />
-        </div>
-        <div class="mb-2">
-          <label>कारण:</label>
-          <textarea class="form-control" id="leaveReason" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-success btn-sm">सबमिट करें</button>
-        <button type="button" class="btn btn-danger btn-sm float-end" onclick="closeLeaveForm()">बंद करें</button>
-      </form>
-    </div>
+  <div class="section">
+    <h2>Education</h2>
+    <p id="r-education">Your education details</p>
   </div>
+</div>
 
-  <!-- Ticket count and frequent query badge -->
-  <div class="ticket-count" id="ticketCount">Tickets: 0</div>
-  <div class="frequent-number" id="frequentPopup" onclick="showFrequentDetails()">Frequent Queries</div>
-
-  <!-- Main container -->
-<div class="container mt-5">
-  <!-- Quality Education Heading -->
-  <div class="text-center mb-1">
-    <h1 style="font-weight: bold; font-size: 2.5rem;">
-      <span style="color: #FF9933;">Q</span>uality <span style="color: #2E8B57;">E</span>ducation
-    </h1>
-  </div>
-
-  <!-- Customer Query Manager Subheading -->
-  <div class="text-center mb-4">
-    <h4 style="font-weight: normal; color: #000;">Customer Query Manager</h4>
-  </div>
-
-    <form id="queryForm">
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="name" class="form-label">नाम:</label>
-          <input type="text" id="name" class="form-control" required />
-        </div>
-        <div class="col-md-6 mb-3">
-          <label for="mobile" class="form-label">मोबाइल नंबर:</label>
-          <input type="text" id="mobile" class="form-control" required />
-        </div>
-        <div class="col-md-6 mb-3">
-          <label for="type" class="form-label">क्वेरी प्रकार:</label>
-          <select id="type" class="form-select">
-            <option>सुझाव</option>
-            <option>शिकायत</option>
-            <option>ऑनलाइन कोर्स समस्या</option>
-            <option>ऑनलाइन टेस्ट की समस्या</option>
-            <option>ऑफलाइन टेस्ट सीरीज समस्या</option>
-            <option>जानकारी</option>
-            <option>App से संबंधित समस्या</option>
-            <option>ऑर्डर से संबंधित समस्या</option>
-          </select>
-        </div>
-        <div class="col-md-6 mb-3">
-          <label for="followup" class="form-label">फॉलोअप चाहिए?</label>
-          <select id="followup" class="form-select">
-            <option>Yes</option>
-            <option>No</option>
-          </select>
-        </div>
-        <div class="col-md-12 mb-3">
-          <label for="details" class="form-label">विवरण:</label>
-          <textarea id="details" class="form-control" rows="2"></textarea>
-        </div>
-        <div class="col-md-12 mb-3">
-          <label for="response" class="form-label">कस्टमर का रेस्पॉन्स:</label>
-          <textarea id="response" class="form-control" rows="2"></textarea>
-        </div>
-        <div class="col-md-6 mb-3">
-          <label for="status" class="form-label">स्टेटस:</label>
-          <select id="status" class="form-select">
-            <option>Pending</option>
-            <option>Resolved</option>
-          </select>
-        </div>
-        <div class="col-md-6 mb-3">
-          <label for="followupDate" class="form-label">फॉलोअप की तारीख (optional):</label>
-          <input type="date" id="followupDate" class="form-control" />
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary">सेव करें</button>
-    </form>
-
-    <hr />
-    <input type="text" id="searchInput" class="form-control mb-3" placeholder="नाम या नंबर से खोजें..." onkeyup="filterTable()">
-
-    <table class="table table-bordered table-hover" id="queryTable">
-      <thead class="table-primary">
-        <tr>
-          <th onclick="toggleTimeVisibility()" style="cursor:pointer">डेट (Time दिखाने के लिए क्लिक करें)</th>
-          <th>टिकट #</th>
-          <th>नाम</th>
-          <th>नंबर</th>
-          <th>क्वेरी प्रकार</th>
-          <th>स्टेटस</th>
-          <th>फॉलोअप</th>
-          <th>नोट्स</th>
-          <th>WhatsApp</th>
-          <th>एक्शन</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+<button onclick="downloadPDF()">Download Resume as PDF</button>
 
 <script>
-    const form = document.getElementById('queryForm');
-    const table = document.querySelector('#queryTable tbody');
-    const ticketCounter = document.getElementById('ticketCount');
-    let data = JSON.parse(localStorage.getItem('queryData')) || [];
-    let showTime = false;
-    let editIndex = null;
-
-    function renderTable() {
-      table.innerHTML = "";
-      let closedThisMonth = 0;
-      data.forEach((item, index) => {
-        const onlyDate = item.time.split(",")[0];
-        const monthNow = new Date().getMonth();
-        if (item.status === "Resolved" && new Date(item.time).getMonth() === monthNow) {
-          closedThisMonth++;
-        }
-        const whatsappLink = `https://wa.me/91${item.mobile}?text=नमस्ते ${item.name}, आपकी ${item.type} के बारे में जानकारी:`;
-        table.innerHTML += `
-          <tr>
-            <td class="${showTime ? '' : 'hidden-time'}">${item.time}</td>
-            <td class="${showTime ? 'hidden-time' : ''}">${onlyDate}</td>
-            <td>#${item.ticket.toString().padStart(3, '0')}</td>
-            <td><a href="javascript:void(0);" onclick="showHistory('${item.mobile}')">${item.name}</a></td>
-<td><a href="javascript:void(0);" onclick="showHistory('${item.mobile}')">${item.mobile}</a></td>
-            <td>${item.type}</td>
-            <td>${item.status}</td>
-            <td>${item.followup} ${item.followupDate ? '(' + item.followupDate + ')' : ''}</td>
-            <td>${item.details}<br><strong>Response:</strong> ${item.response}</td>
-            <td><a href="${whatsappLink}" target="_blank" class="btn btn-sm btn-success">Message</a></td>
-            <td><button class="btn btn-sm btn-danger" onclick="deleteRow(${index})">Delete</button></td>
-            <td>
-              <button class="btn btn-sm btn-warning" onclick="editRow(${index})">
-                <i class="fa fa-edit"></i> Edit
-              </button>
-            </td>
-          </tr>`;
-      });
-      document.getElementById('closedCount').textContent = closedThisMonth;
-      ticketCounter.textContent = `Tickets: ${data.length}`;
-    }
-
-    function editRow(index) {
-      editIndex = index;
-      const item = data[index];
-
-      document.getElementById('name').value = item.name;
-      document.getElementById('mobile').value = item.mobile;
-      document.getElementById('type').value = item.type;
-      document.getElementById('details').value = item.details;
-      document.getElementById('response').value = item.response;
-      document.getElementById('followup').value = item.followup;
-      document.getElementById('status').value = item.status;
-      document.getElementById('followupDate').value = item.followupDate;
-
-      document.querySelector('#queryForm button[type="submit"]').textContent = "Update";
-    }
-
-    function toggleTimeVisibility() {
-      showTime = !showTime;
-      renderTable();
-    }
-
-    function deleteRow(index) {
-      data.splice(index, 1);
-      localStorage.setItem('queryData', JSON.stringify(data));
-      renderTable();
-    }
-
-    function filterTable() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const rows = table.getElementsByTagName('tr');
-      for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        const name = row.cells[2]?.textContent.toLowerCase();
-        const mobile = row.cells[3]?.textContent.toLowerCase();
-        row.style.display = (name.includes(search) || mobile.includes(search)) ? "" : "none";
-      }
-    }
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const entry = {
-        ticket: editIndex !== null ? data[editIndex].ticket : data.length + 1,
-        name: document.getElementById('name').value,
-        mobile: document.getElementById('mobile').value,
-        type: document.getElementById('type').value,
-        details: document.getElementById('details').value,
-        response: document.getElementById('response').value,
-        followup: document.getElementById('followup').value,
-        status: document.getElementById('status').value,
-        followupDate: document.getElementById('followupDate').value,
-        time: new Date().toLocaleString()
-      };
-
-      if (editIndex !== null) {
-        data[editIndex] = entry;
-        editIndex = null;
-        document.querySelector('#queryForm button[type="submit"]').textContent = "Submit";
-      } else {
-        data.push(entry);
-      }
-
-      localStorage.setItem('queryData', JSON.stringify(data));
-      renderTable();
-      form.reset();
-    });
-
-    function showFrequentDetails() {
-      const mobileCounts = {};
-      data.forEach(item => {
-        mobileCounts[item.mobile] = (mobileCounts[item.mobile] || 0) + 1;
-      });
-      let repeated = Object.entries(mobileCounts).filter(([_, count]) => count > 1);
-      if (repeated.length === 0) return alert("No frequent queries found.");
-      let msg = repeated.map(([mobile, count]) => `${mobile} - ${count} times`).join("\n");
-      alert("Frequent Queries:\n" + msg);
-    }
-
-    function togglePanel() {
-      document.getElementById('panel').classList.toggle('active');
-    }
-
-    function openLeaveForm() {
-      document.getElementById('leaveModal').style.display = 'flex';
-    }
-
-    function closeLeaveForm() {
-      document.getElementById('leaveModal').style.display = 'none';
-    }
-
-    function submitLeaveForm(e) {
-      e.preventDefault();
-      const name = document.getElementById('leaveName').value;
-      const date = document.getElementById('leaveDate').value;
-      const reason = document.getElementById('leaveReason').value;
-      alert(`Leave submitted:\nName: ${name}\nDate: ${date}\nReason: ${reason}`);
-      closeLeaveForm();
-    }
-
-    renderTable();
-function showHistory(mobile) {
-  const customerQueries = data.filter(item => item.mobile === mobile);
-  let content = `<p><strong>Total Queries:</strong> ${customerQueries.length}</p><ul>`;
-  customerQueries.forEach((q, i) => {
-    content += `<li>
-      <strong>Date:</strong> ${q.time}<br>
-      <strong>Type:</strong> ${q.type}<br>
-      <strong>Status:</strong> ${q.status}<br>
-      <strong>Details:</strong> ${q.details}<br>
-      <strong>Response:</strong> ${q.response}
-    </li><hr>`;
-  });
-  content += `</ul>`;
-  document.getElementById('historyContent').innerHTML = content;
-  document.getElementById('historyModal').style.display = 'flex';
+function generateResume() {
+  document.getElementById('r-name').innerText = document.getElementById('name').value;
+  document.getElementById('r-email').innerText = "Email: " + document.getElementById('email').value;
+  document.getElementById('r-phone').innerText = "Phone: " + document.getElementById('phone').value;
+  document.getElementById('r-skills').innerText = document.getElementById('skills').value;
+  document.getElementById('r-experience').innerText = document.getElementById('experience').value;
+  document.getElementById('r-education').innerText = document.getElementById('education').value;
 }
 
-function closeHistory() {
-  document.getElementById('historyModal').style.display = 'none';
+function downloadPDF() {
+  var element = document.getElementById('resume');
+  html2pdf().from(element).set({
+    margin: 1,
+    filename: 'My_Resume.pdf',
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+  }).save();
 }
-  </script>
-<!-- Customer History Modal -->
-<div id="historyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000099; justify-content:center; align-items:center; z-index:1000;">
-  <div style="background:white; padding:20px; max-width:600px; max-height:80vh; overflow:auto; border-radius:10px;">
-    <h3>Customer History</h3>
-    <div id="historyContent"></div>
-    <button onclick="closeHistory()" style="margin-top:10px;">Close</button>
-  </div>
-</div><!-- Resolved Count Button (Bottom Right Corner) -->
-<button id="resolvedCountBtn" style="position: fixed; bottom: 10px; right: 10px; background-color: green; color: white; padding: 10px 20px; border: none; border-radius: 5px; z-index: 1000;">
-  Resolved (0)
-</button>
+</script>
 
-<script>
-  function updateResolvedCountFromTable() {
-    let count = 0;
-    const rows = document.querySelectorAll("table tr");
-    rows.forEach(row => {
-      const cells = row.querySelectorAll("td");
-      cells.forEach(cell => {
-        if (cell.innerText.trim() === "Resolved") {
-          count++;
-        }
-      });
-    });
-    document.getElementById('resolvedCountBtn').innerText = `Resolved (${count})`;
-  }
-
-  // Call initially
-  updateResolvedCountFromTable();
-
-  // Observe changes in the table automatically
-  const targetNode = document.querySelector("table");
-  if (targetNode) {
-    const observer = new MutationObserver(() => {
-      updateResolvedCountFromTable();
-    });
-
-    observer.observe(targetNode, {
-      childList: true,
-      subtree: true,
-      characterData: true,
-    });
-  }
-</script></body>
+</body>
 </html>
