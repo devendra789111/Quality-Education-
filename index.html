@@ -27,6 +27,11 @@
       color: #666;
       margin-top: 10px;
     }
+    .receipt-buttons button {
+      font-size: 12px;
+      padding: 8px 16px;
+      margin: 5px;
+    }
   </style>
 </head>
 
@@ -52,6 +57,12 @@
         <option value="Jodhpur">Jodhpur</option>
         <option value="Ajmer">Ajmer</option>
         <option value="Bikaner">Bikaner</option>
+      </select>
+      <select id="testSeries" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+        <option value="">Select Test Series</option>
+        <option value="Rajasthan Constable Offline Test">Rajasthan Constable Offline Test</option>
+        <option value="Patwar Offline Test">Patwar Offline Test</option>
+        <option value="VDO Offline Test">VDO Offline Test</option>
       </select>
       <button type="submit" class="col-span-1 md:col-span-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition duration-300">Add Entry</button>
     </form>
@@ -79,6 +90,7 @@
     const payment = document.getElementById('payment').value.trim();
     const dateRaw = document.getElementById('date').value;
     const city = document.getElementById('city').value;
+    const testSeries = document.getElementById('testSeries').value;
 
     // Check if mobile number already exists
     const existingRegistration = registrations.find(reg => reg.mobile === mobile);
@@ -93,7 +105,7 @@
     const dateParts = dateRaw.split("-");
     const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
 
-    const newRegistration = { fullName, fatherName, mobile, payment, formattedDate, city, rollNumber };
+    const newRegistration = { fullName, fatherName, mobile, payment, formattedDate, city, testSeries, rollNumber };
     if (!existingRegistration) {
       registrations.push(newRegistration);
     } else {
@@ -127,12 +139,13 @@
           <p><strong>Payment:</strong> ₹${reg.payment}</p>
           <p><strong>Date:</strong> ${reg.formattedDate}</p>
           <p><strong>City:</strong> ${reg.city}</p>
+          <p><strong>Test Series:</strong> ${reg.testSeries}</p>
         </div>
         <div class="receipt-footer"><strong>Office Address:</strong> Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur | <strong>Contact:</strong> 8949294370, 7300080475</div>
-        <div class="flex justify-between mt-4">
-          <button onclick="downloadPDF(${index})" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Download PDF</button>
-          <a href="${generateWhatsAppLink(reg)}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-xl flex items-center"><i class="fab fa-whatsapp mr-2"></i>Send WhatsApp</a>
-          <button onclick="deleteReceipt(${index})" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl">Delete</button>
+        <div class="receipt-buttons">
+          <button onclick="downloadPDF(${index})" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-xl">Download PDF</button>
+          <a href="${generateWhatsAppLink(reg)}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded-xl flex items-center"><i class="fab fa-whatsapp mr-2"></i>Send WhatsApp</a>
+          <button onclick="deleteReceipt(${index})" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-xl">Delete</button>
         </div>
       `;
       receiptsDiv.appendChild(receipt);
@@ -146,7 +159,8 @@
       `*Mobile Number:* ${reg.mobile}%0A` +
       `*Payment:* ₹${reg.payment}%0A` +
       `*Date:* ${reg.formattedDate}%0A` +
-      `*City:* ${reg.city}%0A%0A` +
+      `*City:* ${reg.city}%0A` +
+      `*Test Series:* ${reg.testSeries}%0A%0A` +
       `*Office Address:* Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur%0A` +
       `*Contact:* 8949294370, 7300080475%0A%0A` +
       `*नोट:*%0A` +
@@ -175,6 +189,7 @@
     doc.text(`*Payment:* ₹${reg.payment}`, 20, 80);
     doc.text(`*Date:* ${reg.formattedDate}`, 20, 90);
     doc.text(`*City:* ${reg.city}`, 20, 100);
+    doc.text(`*Test Series:* ${reg.testSeries}`, 20, 110);
 
     doc.setFontSize(12);
     doc.text("*Office Address:* Shri Gopal Nagar, Gurjar ki Thadi,", 20, 120);
@@ -188,12 +203,17 @@
     const deletedRollNumber = registrations[index].rollNumber;
     registrations.splice(index, 1);
 
-    // Reassign the deleted roll number to the next registration
+    // Assign deleted roll number to the next registration
+    const newRollNumber = deletedRollNumber;
     registrations.forEach((reg, i) => {
-      if (reg.rollNumber > deletedRollNumber) {
-        reg.rollNumber--;
+      if (reg.rollNumber >= newRollNumber) {
+        reg.rollNumber++;
       }
     });
+
+    // Reassign roll number for new registrations
+    const nextRegistration = { ...registrations[registrations.length - 1], rollNumber: newRollNumber };
+    registrations.push(nextRegistration);
 
     // Save updated data to localStorage
     localStorage.setItem('registrations', JSON.stringify(registrations));
