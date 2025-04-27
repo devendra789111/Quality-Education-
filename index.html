@@ -212,14 +212,7 @@
     const deletedRollNumber = registrations[index].rollNumber;
     registrations.splice(index, 1);
 
-    // Reassign the deleted roll number to the next registration
-    registrations.forEach((reg, i) => {
-      if (reg.rollNumber >= deletedRollNumber) {
-        reg.rollNumber--;
-      }
-    });
-
-    // Save updated data to localStorage
+    // Save updated data to localStorage without changing roll numbers
     localStorage.setItem('registrations', JSON.stringify(registrations));
 
     updateRegistrations();
