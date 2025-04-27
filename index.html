@@ -42,7 +42,7 @@
     form button:hover {
       background: #218838;
     }
-    .receipt {
+    .receipt-container {
       background: #fff;
       margin: 30px auto;
       padding: 20px;
@@ -51,6 +51,11 @@
       max-width: 500px;
       box-shadow: 0 8px 16px rgba(0,0,0,0.3);
       text-align: center;
+    }
+    .receipt-content {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
     }
     #downloadPdf {
       background: #007bff;
@@ -83,16 +88,18 @@
     </select>
     <button type="submit">Submit</button>
   </form>
-</div><div class="receipt" id="receipt" style="display: none;">
-  <h2>Receipt</h2>
-  <p><strong>Roll Number:</strong> <span id="rollNumber"></span></p>
-  <p><strong>Name:</strong> <span id="rName"></span></p>
-  <p><strong>Father's Name:</strong> <span id="rFatherName"></span></p>
-  <p><strong>Mobile:</strong> <span id="rMobile"></span></p>
-  <p><strong>Payment:</strong> ₹<span id="rPayment"></span></p>
-  <p><strong>Date:</strong> <span id="rDate"></span></p>
-  <p><strong>Center:</strong> <span id="rCenter"></span></p><button id="downloadPdf">Download PDF</button>
-
+</div><div class="receipt-container" id="receipt" style="display: none;">
+  <div class="receipt-content" id="receiptContent">
+    <h2>Receipt</h2>
+    <p><strong>Roll Number:</strong> <span id="rollNumber"></span></p>
+    <p><strong>Name:</strong> <span id="rName"></span></p>
+    <p><strong>Father's Name:</strong> <span id="rFatherName"></span></p>
+    <p><strong>Mobile:</strong> <span id="rMobile"></span></p>
+    <p><strong>Payment:</strong> ₹<span id="rPayment"></span></p>
+    <p><strong>Date:</strong> <span id="rDate"></span></p>
+    <p><strong>Center:</strong> <span id="rCenter"></span></p>
+  </div>
+  <button id="downloadPdf">Download PDF</button>
 </div><!-- html2pdf.js library --><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script>
   document.getElementById('registrationForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -133,8 +140,15 @@
   }
 
   document.getElementById('downloadPdf').addEventListener('click', function() {
-    const element = document.getElementById('receipt');
-    html2pdf().from(element).save('receipt.pdf');
+    const element = document.getElementById('receiptContent');
+    const opt = {
+      margin: 0.5,
+      filename: 'receipt.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
   });
 </script></body>
-  </html>
+</html>
