@@ -2,205 +2,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exam Form with Admit Card Generator</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <title>Registration Form with Receipt</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #83a4d4, #b6fbff);
-      padding: 20px;
+      background: linear-gradient(135deg, #f5a623, #f76b1c);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      background: #fff;
+      margin: 50px auto;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
     }
     h1, h2 {
       text-align: center;
+      color: #333;
     }
-    form, #admitCard {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      max-width: 700px;
-      margin: 20px auto;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    input, select {
+    form input, form select, form button {
       width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
+      padding: 12px;
+      margin: 8px 0;
       border-radius: 5px;
-    }
-    #admitCard {
-      display: none;
-      margin-top: 30px;
-      text-align: left;
-    }
-    #admitCard img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
       border: 1px solid #ccc;
-      margin: 10px;
     }
-    .photo-sign {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 20px;
-    }
-    .btn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #3498db;
+    form button {
+      background: #28a745;
       color: white;
       border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    form button:hover {
+      background: #218838;
+    }
+    .receipt {
+      background: #fff;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    #downloadPdf {
+      background: #007bff;
+      margin-top: 20px;
+      color: white;
+      border: none;
+      padding: 10px 20px;
       border-radius: 5px;
       cursor: pointer;
     }
-    .btn:hover {
-      background: #2980b9;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    table, th, td {
-      border: 1px solid black;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
+    #downloadPdf:hover {
+      background: #0056b3;
     }
   </style>
 </head>
-<body><h1>Exam Form</h1><form id="examForm">
-  <label>Name:</label>
-  <input type="text" id="name" required><label>Mobile Number:</label> <input type="text" id="mobile" required>
+<body><div class="container">
+  <h1>Registration Form</h1>
+  <form id="registrationForm">
+    <input type="text" id="name" placeholder="Enter Name" required>
+    <input type="text" id="fatherName" placeholder="Enter Father's Name" required>
+    <input type="tel" id="mobile" placeholder="Enter Mobile Number" pattern="[0-9]{10}" required>
+    <input type="number" id="payment" placeholder="Enter Payment Amount" required>
+    <input type="date" id="date" required>
+    <select id="center" required>
+      <option value="">Select Center</option>
+      <option value="Jaipur">Jaipur</option>
+      <option value="Ajmer">Ajmer</option>
+      <option value="Jodhpur">Jodhpur</option>
+      <option value="Bikaner">Bikaner</option>
+    </select>
+    <button type="submit">Submit</button>
+  </form>
+</div><div class="receipt" id="receipt" style="display: none;">
+  <h2>Receipt</h2>
+  <p><strong>Roll Number:</strong> <span id="rollNumber"></span></p>
+  <p><strong>Name:</strong> <span id="rName"></span></p>
+  <p><strong>Father's Name:</strong> <span id="rFatherName"></span></p>
+  <p><strong>Mobile:</strong> <span id="rMobile"></span></p>
+  <p><strong>Payment:</strong> ₹<span id="rPayment"></span></p>
+  <p><strong>Date:</strong> <span id="rDate"></span></p>
+  <p><strong>Center:</strong> <span id="rCenter"></span></p><button id="downloadPdf">Download PDF</button>
 
-<label>City:</label> <input type="text" id="city" required>
+</div><!-- html2pdf.js library --><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script>
+  document.getElementById('registrationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-<label>District:</label> <input type="text" id="district" required>
+    const name = document.getElementById('name').value.trim();
+    const fatherName = document.getElementById('fatherName').value.trim();
+    const mobile = document.getElementById('mobile').value.trim();
+    const payment = document.getElementById('payment').value.trim();
+    const date = document.getElementById('date').value;
+    const center = document.getElementById('center').value;
 
-<label>State:</label> <input type="text" id="state" required>
+    if (!name || !fatherName || !mobile || !payment || !date || !center) {
+      alert("Please fill all fields correctly.");
+      return;
+    }
 
-<label>Photo Upload:</label> <input type="file" id="photo" accept="image/*" required>
+    const rollNumber = Math.floor(10000 + Math.random() * 90000);
 
-<label>Signature Upload:</label> <input type="file" id="sign" accept="image/*" required>
-
-<button type="submit" class="btn">Generate Admit Card</button>
-
-</form><div id="admitCard">
-  <h2>Admit Card</h2>
-  <div class="photo-sign">
-    <div>
-      <p><strong>Photo:</strong></p>
-      <img id="previewPhoto">
-    </div>
-    <div>
-      <p><strong>Sign:</strong></p>
-      <img id="previewSign">
-    </div>
-  </div>
-  <table>
-    <tr><th>Name</th><td id="acName"></td></tr>
-    <tr><th>Mobile</th><td id="acMobile"></td></tr>
-    <tr><th>City</th><td id="acCity"></td></tr>
-    <tr><th>District</th><td id="acDistrict"></td></tr>
-    <tr><th>State</th><td id="acState"></td></tr>
-    <tr><th>Roll No.</th><td id="acRoll"></td></tr>
-    <tr><th>Exam Date</th><td id="acDate"></td></tr>
-    <tr><th>Exam Time</th><td id="acTime"></td></tr>
-    <tr><th>Exam Center</th><td id="acCenter"></td></tr>
-  </table><button onclick="downloadPDF()" class="btn">Download Admit Card</button>
-
-</div><script>
-function randomRoll() {
-  return Math.floor(100000 + Math.random() * 900000);
-}
-
-function randomDate() {
-  const start = new Date();
-  const end = new Date(2025, 5, 30);
-  const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-  return date.toISOString().split('T')[0];
-}
-
-function randomTime() {
-  const times = ['10:00 AM', '12:00 PM', '02:00 PM', '04:00 PM'];
-  return times[Math.floor(Math.random() * times.length)];
-}
-
-function randomCenter() {
-  const centers = ['Center A', 'Center B', 'Center C', 'Center D'];
-  return centers[Math.floor(Math.random() * centers.length)];
-}
-
-const examForm = document.getElementById('examForm');
-examForm.addEventListener('submit', function(e) {
-  e.preventDefault();
-
-  document.getElementById('acName').innerText = document.getElementById('name').value;
-  document.getElementById('acMobile').innerText = document.getElementById('mobile').value;
-  document.getElementById('acCity').innerText = document.getElementById('city').value;
-  document.getElementById('acDistrict').innerText = document.getElementById('district').value;
-  document.getElementById('acState').innerText = document.getElementById('state').value;
-  document.getElementById('acRoll').innerText = randomRoll();
-  document.getElementById('acDate').innerText = randomDate();
-  document.getElementById('acTime').innerText = randomTime();
-  document.getElementById('acCenter').innerText = randomCenter();
-
-  const photoFile = document.getElementById('photo').files[0];
-  const signFile = document.getElementById('sign').files[0];
-
-  const reader1 = new FileReader();
-  reader1.onload = function(e) {
-    document.getElementById('previewPhoto').src = e.target.result;
-  }
-  reader1.readAsDataURL(photoFile);
-
-  const reader2 = new FileReader();
-  reader2.onload = function(e) {
-    document.getElementById('previewSign').src = e.target.result;
-  }
-  reader2.readAsDataURL(signFile);
-
-  document.getElementById('admitCard').style.display = 'block';
-});
-
-function downloadPDF() {
-  const element = document.getElementById('admitCard');
-
-  const imagesLoaded = () => {
-    return new Promise((resolve) => {
-      let total = 2, count = 0;
-      function check() {
-        count++;
-        if (count === total) resolve();
-      }
-
-      const photo = document.getElementById('previewPhoto');
-      const sign = document.getElementById('previewSign');
-
-      if (photo.complete) { check(); } else { photo.onload = check; }
-      if (sign.complete) { check(); } else { sign.onload = check; }
-    });
-  };
-
-  imagesLoaded().then(() => {
-    var opt = {
-      margin: 0.5,
-      filename: 'Admit_Card.pdf',
-      image: { type: 'jpeg', quality: 1 },
-      html2canvas: { scale: 4 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    const data = {
+      name, fatherName, mobile, payment, date, center, rollNumber
     };
 
-    html2pdf().from(element).set(opt).save();
+    localStorage.setItem('formData_' + rollNumber, JSON.stringify(data));
+
+    showReceipt(data);
   });
-}
+
+  function showReceipt(data) {
+    document.getElementById('receipt').style.display = 'block';
+
+    document.getElementById('rollNumber').innerText = data.rollNumber;
+    document.getElementById('rName').innerText = data.name;
+    document.getElementById('rFatherName').innerText = data.fatherName;
+    document.getElementById('rMobile').innerText = data.mobile;
+    document.getElementById('rPayment').innerText = data.payment;
+    document.getElementById('rDate').innerText = data.date;
+    document.getElementById('rCenter').innerText = data.center;
+  }
+
+  document.getElementById('downloadPdf').addEventListener('click', function() {
+    const element = document.getElementById('receipt');
+    html2pdf().from(element).save('receipt.pdf');
+  });
 </script></body>
   </html>
