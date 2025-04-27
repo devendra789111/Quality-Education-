@@ -1,153 +1,67 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registration Form with Receipt and PDF Download</title>
-  <style>
-    body {
-      background: linear-gradient(135deg, #f5a623, #f76b1c);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-    }
-    .container, .receipt-container {
-      background: #fff;
-      margin: 30px auto;
-      padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-    }
-    h1, h2 {
-      text-align: center;
-      color: #333;
-    }
-    form input, form select, form button {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    form button, #downloadPdf {
-      background: #28a745;
-      color: white;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    form button:hover, #downloadPdf:hover {
-      background: #218838;
-    }
-    .receipt-content {
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background-color: #f9f9f9;
-      margin-top: 10px;
-    }
-    #downloadPdf {
-      display: block;
-      margin: 20px auto 0;
-      padding: 10px 20px;
-      background: #007bff;
-    }
-    #downloadPdf:hover {
-      background: #0056b3;
-    }@media (max-width: 600px) {
-  .container, .receipt-container {
-    width: 95%;
-    padding: 15px;
-  }
-  form input, form select, form button {
-    padding: 10px;
-  }
-}
-
-  </style>
+    <meta charset="UTF-8">
+    <title>Form to PDF Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body><div class="container">
-  <h1>Registration Form</h1>
-  <form id="registrationForm">
-    <input type="text" id="name" placeholder="Enter Name" required>
-    <input type="text" id="fatherName" placeholder="Enter Father's Name" required>
-    <input type="tel" id="mobile" placeholder="Enter Mobile Number" pattern="[0-9]{10}" required>
-    <input type="number" id="payment" placeholder="Enter Payment Amount" required>
-    <input type="date" id="date" required>
-    <select id="center" required>
-      <option value="">Select Center</option>
-      <option value="Jaipur">Jaipur</option>
-      <option value="Ajmer">Ajmer</option>
-      <option value="Jodhpur">Jodhpur</option>
-      <option value="Bikaner">Bikaner</option>
-    </select>
-    <button type="submit">Submit</button>
-  </form>
-</div><div class="receipt-container" id="receipt" style="display: none;">
-  <h2>Receipt</h2>
-  <div class="receipt-content" id="receiptContent">
-    <p><strong>Roll Number:</strong> <span id="rollNumber"></span></p>
-    <p><strong>Name:</strong> <span id="rName"></span></p>
-    <p><strong>Father's Name:</strong> <span id="rFatherName"></span></p>
-    <p><strong>Mobile:</strong> <span id="rMobile"></span></p>
-    <p><strong>Payment:</strong> ₹<span id="rPayment"></span></p>
-    <p><strong>Date:</strong> <span id="rDate"></span></p>
-    <p><strong>Center:</strong> <span id="rCenter"></span></p>
-  </div>
-  <button id="downloadPdf">Download PDF</button>
-</div><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script>
-  document.getElementById('registrationForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+<body class="bg-gradient-to-r from-blue-400 to-purple-500 min-h-screen flex items-center justify-center">
 
-    const name = document.getElementById('name').value.trim();
-    const fatherName = document.getElementById('fatherName').value.trim();
-    const mobile = document.getElementById('mobile').value.trim();
-    const payment = document.getElementById('payment').value.trim();
-    const date = document.getElementById('date').value;
-    const center = document.getElementById('center').value;
+<div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg">
+    <h1 class="text-3xl font-bold text-center text-purple-700 mb-8">Registration Form</h1>
+    <form id="registrationForm" class="space-y-6">
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-700">Full Name</label>
+            <input type="text" id="fullName" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+        </div>
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
+            <input type="email" id="email" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+        </div>
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-700">Phone Number</label>
+            <input type="text" id="phone" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+        </div>
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-700">Address</label>
+            <textarea id="address" rows="3" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition duration-300">
+            Download PDF
+        </button>
+    </form>
+</div>
 
-    if (!name || !fatherName || !mobile || !payment || !date || !center) {
-      alert("Please fill all fields correctly.");
-      return;
-    }
+<script>
+    document.getElementById('registrationForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
 
-    const rollNumber = Math.floor(10000 + Math.random() * 90000);
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
-    const data = {
-      name, fatherName, mobile, payment, date, center, rollNumber
-    };
+        const fullName = document.getElementById('fullName').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const address = document.getElementById('address').value;
 
-    localStorage.setItem('formData_' + rollNumber, JSON.stringify(data));
+        doc.setFontSize(22);
+        doc.setTextColor(91, 44, 111);
+        doc.text("Registration Details", 20, 20);
 
-    showReceipt(data);
-  });
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Full Name: ${fullName}`, 20, 40);
+        doc.text(`Email: ${email}`, 20, 55);
+        doc.text(`Phone: ${phone}`, 20, 70);
+        doc.text(`Address:`, 20, 85);
 
-  function showReceipt(data) {
-    document.getElementById('receipt').style.display = 'block';
+        const splitAddress = doc.splitTextToSize(address, 170);
+        doc.text(splitAddress, 20, 95);
 
-    document.getElementById('rollNumber').innerText = data.rollNumber;
-    document.getElementById('rName').innerText = data.name;
-    document.getElementById('rFatherName').innerText = data.fatherName;
-    document.getElementById('rMobile').innerText = data.mobile;
-    document.getElementById('rPayment').innerText = data.payment;
-    document.getElementById('rDate').innerText = data.date;
-    document.getElementById('rCenter').innerText = data.center;
-  }
+        doc.save('Registration_Form.pdf');
+    });
+</script>
 
-  document.getElementById('downloadPdf').addEventListener('click', function() {
-    const receipt = document.getElementById('receiptContent');
-    html2pdf()
-      .from(receipt)
-      .set({
-        margin: 1,
-        filename: 'receipt.pdf',
-        html2canvas: { scale: 4 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      })
-      .save();
-  });
-</script></body>
-  </html>
+</body>
+</html>
