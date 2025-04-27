@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registration Form with Receipt</title>
+  <title>Registration Form with Receipt and PDF Download</title>
   <style>
     body {
       background: linear-gradient(135deg, #f5a623, #f76b1c);
@@ -11,10 +11,10 @@
       padding: 0;
       min-height: 100vh;
     }
-    .container {
+    .container, .receipt-container {
       background: #fff;
-      margin: 50px auto;
-      padding: 30px;
+      margin: 30px auto;
+      padding: 20px;
       border-radius: 10px;
       width: 90%;
       max-width: 500px;
@@ -31,7 +31,7 @@
       border-radius: 5px;
       border: 1px solid #ccc;
     }
-    form button {
+    form button, #downloadPdf {
       background: #28a745;
       color: white;
       border: none;
@@ -39,36 +39,34 @@
       cursor: pointer;
       transition: background 0.3s;
     }
-    form button:hover {
+    form button:hover, #downloadPdf:hover {
       background: #218838;
     }
-    .receipt-container {
-      background: #fff;
-      margin: 30px auto;
-      padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-      text-align: center;
-    }
     .receipt-content {
-      padding: 20px;
+      padding: 15px;
       border: 1px solid #ddd;
       border-radius: 10px;
+      background-color: #f9f9f9;
+      margin-top: 10px;
     }
     #downloadPdf {
-      background: #007bff;
-      margin-top: 20px;
-      color: white;
-      border: none;
+      display: block;
+      margin: 20px auto 0;
       padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
+      background: #007bff;
     }
     #downloadPdf:hover {
       background: #0056b3;
-    }
+    }@media (max-width: 600px) {
+  .container, .receipt-container {
+    width: 95%;
+    padding: 15px;
+  }
+  form input, form select, form button {
+    padding: 10px;
+  }
+}
+
   </style>
 </head>
 <body><div class="container">
@@ -89,8 +87,8 @@
     <button type="submit">Submit</button>
   </form>
 </div><div class="receipt-container" id="receipt" style="display: none;">
+  <h2>Receipt</h2>
   <div class="receipt-content" id="receiptContent">
-    <h2>Receipt</h2>
     <p><strong>Roll Number:</strong> <span id="rollNumber"></span></p>
     <p><strong>Name:</strong> <span id="rName"></span></p>
     <p><strong>Father's Name:</strong> <span id="rFatherName"></span></p>
@@ -100,7 +98,7 @@
     <p><strong>Center:</strong> <span id="rCenter"></span></p>
   </div>
   <button id="downloadPdf">Download PDF</button>
-</div><!-- html2pdf.js library --><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script>
+</div><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script>
   document.getElementById('registrationForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -140,15 +138,16 @@
   }
 
   document.getElementById('downloadPdf').addEventListener('click', function() {
-    const element = document.getElementById('receiptContent');
-    const opt = {
-      margin: 0.5,
-      filename: 'receipt.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save();
+    const receipt = document.getElementById('receiptContent');
+    html2pdf()
+      .from(receipt)
+      .set({
+        margin: 1,
+        filename: 'receipt.pdf',
+        html2canvas: { scale: 4 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      })
+      .save();
   });
 </script></body>
-</html>
+  </html>
