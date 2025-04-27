@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,15 +28,23 @@
       margin-top: 10px;
     }
   </style>
-</head><body class="bg-gradient-to-r from-blue-400 to-purple-500 min-h-screen p-6"><div class="max-w-4xl mx-auto">  <div class="flex justify-between items-center mb-6">
+</head>
+
+<body class="bg-gradient-to-r from-blue-400 to-purple-500 min-h-screen p-6">
+
+<div class="max-w-4xl mx-auto">
+
+  <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold text-white">Registration Form</h1>
     <div class="text-white font-bold">Total Registrations: <span id="totalRegistrations">0</span></div>
-  </div>  <div class="bg-white p-8 rounded-2xl shadow-2xl mb-8">
+  </div>
+
+  <div class="bg-white p-8 rounded-2xl shadow-2xl mb-8">
     <form id="registrationForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <input type="text" id="fullName" placeholder="Full Name" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
       <input type="text" id="fatherName" placeholder="Father's Name" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
       <input type="text" id="mobile" placeholder="Mobile Number" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-      <input type="text" id="payment" placeholder="Payment" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+      <input type="text" id="payment" placeholder="Payment Amount" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
       <input type="date" id="date" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
       <select id="city" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
         <option value="">Select City</option>
@@ -46,23 +55,31 @@
       </select>
       <button type="submit" class="col-span-1 md:col-span-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition duration-300">Add Entry</button>
     </form>
-  </div>  <div id="receipts"></div></div><script>
+  </div>
+
+  <div id="receipts"></div>
+
+</div>
+
+<script>
   let registrations = [];
   let startingRollNumber = 11701;
 
   document.getElementById('registrationForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const fullName = document.getElementById('fullName').value;
-    const fatherName = document.getElementById('fatherName').value;
-    const mobile = document.getElementById('mobile').value;
-    const payment = document.getElementById('payment').value;
-    const date = document.getElementById('date').value;
+    const fullName = document.getElementById('fullName').value.trim();
+    const fatherName = document.getElementById('fatherName').value.trim();
+    const mobile = document.getElementById('mobile').value.trim();
+    const payment = document.getElementById('payment').value.trim();
+    const dateRaw = document.getElementById('date').value;
     const city = document.getElementById('city').value;
 
     const rollNumber = startingRollNumber + registrations.length;
+    const dateParts = dateRaw.split("-");
+    const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
 
-    const newRegistration = { fullName, fatherName, mobile, payment, date, city, rollNumber };
+    const newRegistration = { fullName, fatherName, mobile, payment, formattedDate, city, rollNumber };
     registrations.push(newRegistration);
 
     document.getElementById('registrationForm').reset();
@@ -84,18 +101,23 @@
           <p><strong>Full Name:</strong> ${reg.fullName}</p>
           <p><strong>Father's Name:</strong> ${reg.fatherName}</p>
           <p><strong>Mobile Number:</strong> ${reg.mobile}</p>
-          <p><strong>Payment:</strong> ${reg.payment}</p>
-          <p><strong>Date:</strong> ${reg.date}</p>
+          <p><strong>Payment:</strong> ₹${reg.payment}</p>
+          <p><strong>Date:</strong> ${reg.formattedDate}</p>
           <p><strong>City:</strong> ${reg.city}</p>
         </div>
         <div class="receipt-footer">Office Address: Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur | Contact: 8949294370, 7300080475</div>
         <div class="flex justify-between mt-4">
           <button onclick="downloadPDF(${index})" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Download PDF</button>
-          <a href="https://wa.me/91${reg.mobile}?text=Hello%20${encodeURIComponent(reg.fullName)},%20your%20Roll%20No%20${reg.rollNumber}%20has%20been%20successfully%20registered%20at%20${reg.city}.%20-%20Quality%20Education" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-xl flex items-center"><i class="fab fa-whatsapp mr-2"></i>Send WhatsApp</a>
+          <a href="${generateWhatsAppLink(reg)}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-xl flex items-center"><i class="fab fa-whatsapp mr-2"></i>Send WhatsApp</a>
         </div>
       `;
       receiptsDiv.appendChild(receipt);
     });
+  }
+
+  function generateWhatsAppLink(reg) {
+    const message = `Hello ${reg.fullName},%0ARoll Number: ${reg.rollNumber}%0AFather's Name: ${reg.fatherName}%0AMobile Number: ${reg.mobile}%0APayment: ₹${reg.payment}%0ADate: ${reg.formattedDate}%0ACity: ${reg.city}%0A%0AOffice Address:%0AShri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur%0AContact: 8949294370, 7300080475%0A%0A- Quality Education`;
+    return `https://wa.me/91${reg.mobile}?text=${message}`;
   }
 
   function downloadPDF(index) {
@@ -114,8 +136,8 @@
     doc.text(`Full Name: ${reg.fullName}`, 20, 50);
     doc.text(`Father's Name: ${reg.fatherName}`, 20, 60);
     doc.text(`Mobile Number: ${reg.mobile}`, 20, 70);
-    doc.text(`Payment: ${reg.payment}`, 20, 80);
-    doc.text(`Date: ${reg.date}`, 20, 90);
+    doc.text(`Payment: ₹${reg.payment}`, 20, 80);
+    doc.text(`Date: ${reg.formattedDate}`, 20, 90);
     doc.text(`City: ${reg.city}`, 20, 100);
 
     doc.setFontSize(12);
@@ -125,5 +147,7 @@
 
     doc.save(`Receipt_${reg.rollNumber}.pdf`);
   }
-</script></body>
-</html>
+</script>
+
+</body>
+  </html>
