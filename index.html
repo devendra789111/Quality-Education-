@@ -124,7 +124,17 @@
   }
 
   function generateWhatsAppLink(reg) {
-    const message = `Hello ${reg.fullName},%0ARoll Number: ${reg.rollNumber}%0AFather's Name: ${reg.fatherName}%0AMobile Number: ${reg.mobile}%0APayment: ₹${reg.payment}%0ADate: ${reg.formattedDate}%0ACity: ${reg.city}%0A%0AOffice Address:%0AShri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur%0AContact: 8949294370, 7300080475%0A%0A- Quality Education`;
+    const message = `Hello *${reg.fullName}*,%0A%0A` +
+      `Roll Number: *${reg.rollNumber}*%0A` +
+      `Father's Name: *${reg.fatherName}*%0A` +
+      `Mobile Number: *${reg.mobile}*%0A` +
+      `Payment: *₹${reg.payment}*%0A` +
+      `Date: *${reg.formattedDate}*%0A` +
+      `City: *${reg.city}*%0A%0A` +
+      `*Office Address:*%0AShri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur%0AContact: 8949294370, 7300080475%0A%0A` +
+      `*नोट:*%0Aकृपया *7300080475* को अपने फोन के कॉन्टेक्ट लिस्ट में सेव कर लें। यदि आपने इसे सेव नहीं किया है, तो आपको ब्रॉडकास्ट द्वारा संदेश प्राप्त नहीं होंगे।%0A%0A` +
+      `- Quality Education`;
+
     return `https://wa.me/91${reg.mobile}?text=${message}`;
   }
 
