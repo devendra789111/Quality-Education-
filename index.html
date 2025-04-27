@@ -80,6 +80,8 @@
   let registrations = JSON.parse(localStorage.getItem('registrations')) || [];
   let startingRollNumberVDO = 11701;
   let startingRollNumberConstable = 12701;
+  let rollNumberCountVDO = 0;
+  let rollNumberCountConstable = 0;
 
   // Update registrations on page load
   window.onload = function() {
@@ -97,17 +99,20 @@
     const city = document.getElementById('city').value;
     const testSeries = document.getElementById('testSeries').value;
 
-    // Check if mobile number already exists
+    // Check if mobile number already exists to prevent duplicate registration
     const existingRegistration = registrations.find(reg => reg.mobile === mobile);
 
     let rollNumber;
     if (existingRegistration) {
-      rollNumber = existingRegistration.rollNumber; // Keep the same roll number if mobile exists
+      alert('This mobile number is already registered!');
+      return;
     } else {
       if (testSeries === 'VDO Offline Test') {
-        rollNumber = startingRollNumberVDO + registrations.filter(reg => reg.testSeries === 'VDO Offline Test').length;
+        rollNumber = startingRollNumberVDO + rollNumberCountVDO;
+        rollNumberCountVDO++;
       } else if (testSeries === 'Rajasthan Constable Offline Test') {
-        rollNumber = startingRollNumberConstable + registrations.filter(reg => reg.testSeries === 'Rajasthan Constable Offline Test').length;
+        rollNumber = startingRollNumberConstable + rollNumberCountConstable;
+        rollNumberCountConstable++;
       }
     }
 
@@ -115,13 +120,7 @@
     const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
 
     const newRegistration = { fullName, fatherName, mobile, payment, formattedDate, city, testSeries, rollNumber };
-    if (!existingRegistration) {
-      registrations.push(newRegistration);
-    } else {
-      // Update existing registration
-      const index = registrations.indexOf(existingRegistration);
-      registrations[index] = newRegistration;
-    }
+    registrations.push(newRegistration);
 
     // Save to localStorage
     localStorage.setItem('registrations', JSON.stringify(registrations));
@@ -212,7 +211,7 @@
     const deletedRollNumber = registrations[index].rollNumber;
     registrations.splice(index, 1);
 
-    // Save updated data to localStorage without changing roll numbers
+    // Save updated data to localStorage
     localStorage.setItem('registrations', JSON.stringify(registrations));
 
     updateRegistrations();
@@ -220,4 +219,4 @@
 </script>
 
 </body>
-</html>
+          </html>
