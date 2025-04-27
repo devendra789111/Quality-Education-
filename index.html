@@ -3,120 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lucky Wallet - Add Money</title>
+  <title>Quality Education Registration</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    .receipt {
+      background: #f7f7f7;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
-    .container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    .receipt-header {
       text-align: center;
-      width: 300px;
-    }
-    h1 {
-      margin-bottom: 20px;
-      color: #f5576c;
-    }
-    .wallet-balance {
       font-size: 22px;
-      margin-bottom: 20px;
+      font-weight: bold;
+      color: #4F46E5;
     }
-    input[type="number"] {
-      width: 90%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      margin-bottom: 20px;
-      font-size: 16px;
+    .receipt-footer {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
     }
-    button {
-      background-color: #f5576c;
-      color: white;
-      padding: 12px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s;
+    .receipt-buttons button {
+      font-size: 12px;
+      padding: 8px 16px;
+      margin: 5px;
     }
-    button:hover {
-      background-color: #d94c5a;
+    .disabled {
+      background-color: #e0e0e0 !important;
+      cursor: not-allowed !important;
     }
   </style>
 </head>
-<body>
 
-<div class="container">
-  <h1>Lucky Wallet</h1>
-  <div class="wallet-balance">
-    Balance: ₹<span id="walletAmount">0.00</span>
+<body class="bg-gradient-to-r from-blue-400 to-purple-500 min-h-screen p-6">
+
+<div class="max-w-4xl mx-auto">
+
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-white">Registration Form</h1>
+    <div class="text-white font-bold">Total Registrations: <span id="totalRegistrations">0</span></div>
   </div>
-  <input type="number" id="amountInput" placeholder="Enter Amount ₹">
-  <button id="addMoneyBtn">Add Money via UPI</button>
+
+  <div class="bg-white p-8 rounded-2xl shadow-2xl mb-8">
+    <form id="registrationForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <input type="text" id="fullName" placeholder="Full Name" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+      <input type="text" id="fatherName" placeholder="Father's Name" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+      <input type="text" id="mobile" placeholder="Mobile Number" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+      <input type="text" id="payment" placeholder="Payment Amount" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+      <input type="date" id="date" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+      <select id="city" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+        <option value="">Select City</option>
+        <option value="Jaipur">Jaipur</option>
+        <option value="Jodhpur">Jodhpur</option>
+        <option value="Ajmer">Ajmer</option>
+        <option value="Bikaner">Bikaner</option>
+      </select>
+      <select id="testSeries" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+        <option value="">Select Test Series</option>
+        <option value="Rajasthan Constable Offline Test">Rajasthan Constable Offline Test</option>
+        <option value="Patwar Offline Test" class="disabled" disabled>Patwar Offline Test</option>
+        <option value="VDO Offline Test">VDO Offline Test</option>
+      </select>
+      <button type="submit" class="col-span-1 md:col-span-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition duration-300">Add Entry</button>
+    </form>
+  </div>
+
+  <div id="receipts"></div>
+
 </div>
 
-<!-- Razorpay Checkout script -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
 <script>
-  // Load wallet amount from localStorage
-  function loadWallet() {
-    const balance = localStorage.getItem('walletBalance') || 0;
-    document.getElementById('walletAmount').innerText = parseFloat(balance).toFixed(2);
-  }
+  let registrations = JSON.parse(localStorage.getItem('registrations')) || [];
+  let startingRollNumberVDO = 11701;
+  let startingRollNumberConstable = 12701;
+  let rollNumberCountVDO = 0;
+  let rollNumberCountConstable = 0;
 
-  // Update wallet amount
-  function updateWallet(amount) {
-    let currentBalance = parseFloat(localStorage.getItem('walletBalance')) || 0;
-    currentBalance += amount;
-    localStorage.setItem('walletBalance', currentBalance.toFixed(2));
-    loadWallet();
-  }
+  // Update registrations on page load
+  window.onload = function() {
+    updateRegistrations();
+  };
 
-  document.getElementById('addMoneyBtn').addEventListener('click', function() {
-    const amount = parseFloat(document.getElementById('amountInput').value);
-    if (!amount || amount <= 0) {
-      alert("Please enter a valid amount!");
+  document.getElementById('registrationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const fullName = document.getElementById('fullName').value.trim();
+    const fatherName = document.getElementById('fatherName').value.trim();
+    const mobile = document.getElementById('mobile').value.trim();
+    const payment = document.getElementById('payment').value.trim();
+    const dateRaw = document.getElementById('date').value;
+    const city = document.getElementById('city').value;
+    const testSeries = document.getElementById('testSeries').value;
+
+    // Check if mobile number already exists to prevent duplicate registration
+    const existingRegistration = registrations.find(reg => reg.mobile === mobile);
+
+    let rollNumber;
+    if (existingRegistration) {
+      alert('This mobile number is already registered!');
       return;
+    } else {
+      if (testSeries === 'VDO Offline Test') {
+        rollNumber = startingRollNumberVDO + rollNumberCountVDO;
+        rollNumberCountVDO++;
+      } else if (testSeries === 'Rajasthan Constable Offline Test') {
+        rollNumber = startingRollNumberConstable + rollNumberCountConstable;
+        rollNumberCountConstable++;
+      }
     }
 
-    const options = {
-      "key": "YOUR_RAZORPAY_TEST_KEY", // Yahan apni Razorpay Test Key lagana
-      "amount": amount * 100, // Amount in paise
-      "currency": "INR",
-      "name": "Lucky Wallet",
-      "description": "Wallet Recharge",
-      "handler": function (response){
-        alert("Payment Successful!\nPayment ID: " + response.razorpay_payment_id);
-        updateWallet(amount);
-        document.getElementById('amountInput').value = '';
-      },
-      "prefill": {
-        "name": "Lucky User",
-        "email": "user@example.com",
-        "contact": "9999999999"
-      },
-      "theme": {
-        "color": "#f5576c"
-      }
-    };
-    const rzp = new Razorpay(options);
-    rzp.open();
+    const dateParts = dateRaw.split("-");
+    const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+    const newRegistration = { fullName, fatherName, mobile, payment, formattedDate, city, testSeries, rollNumber };
+    registrations.push(newRegistration);
+
+    // Save to localStorage
+    localStorage.setItem('registrations', JSON.stringify(registrations));
+
+    document.getElementById('registrationForm').reset();
+    updateRegistrations();
   });
 
-  // Initial Load
-  loadWallet();
+  function updateRegistrations() {
+    const receiptsDiv = document.getElementById('receipts');
+    receiptsDiv.innerHTML = '';
+    document.getElementById('totalRegistrations').innerText = registrations.length;
+
+    registrations.forEach((reg, index) => {
+      const receipt = document.createElement('div');
+      receipt.className = 'receipt';
+      receipt.innerHTML = `
+        <div class="receipt-header">Quality Education</div>
+        <div class="mt-4 text-sm text-gray-800">
+          <p><strong>Name:</strong> ${reg.fullName}</p>
+          <p><strong>Roll Number:</strong> ${reg.rollNumber}</p>
+          <p><strong>Father's Name:</strong> ${reg.fatherName}</p>
+          <p><strong>Mobile Number:</strong> ${reg.mobile}</p>
+          <p><strong>Payment:</strong> ₹${reg.payment}</p>
+          <p><strong>Date:</strong> ${reg.formattedDate}</p>
+          <p><strong>City:</strong> ${reg.city}</p>
+          <p><strong>Test Series:</strong> ${reg.testSeries}</p>
+        </div>
+        <div class="receipt-footer"><strong>Office Address:</strong> Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur | <strong>Contact:</strong> 8949294370, 7300080475</div>
+        <div class="receipt-buttons">
+          <button onclick="downloadPDF(${index})" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-xl">Download PDF</button>
+          <a href="${generateWhatsAppLink(reg)}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded-xl flex items-center"><i class="fab fa-whatsapp mr-2"></i>Send WhatsApp</a>
+          <button onclick="deleteReceipt(${index})" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-xl">Delete</button>
+        </div>
+      `;
+      receiptsDiv.appendChild(receipt);
+    });
+  }
+
+  function generateWhatsAppLink(reg) {
+    const message = `Hello *${reg.fullName}*,%0A%0A` +
+      `*Roll Number:* ${reg.rollNumber}%0A` +
+      `*Father's Name:* ${reg.fatherName}%0A` +
+      `*Mobile Number:* ${reg.mobile}%0A` +
+      `*Payment:* ₹${reg.payment}%0A` +
+      `*Date:* ${reg.formattedDate}%0A` +
+      `*City:* ${reg.city}%0A` +
+      `*Test Series:* ${reg.testSeries}%0A%0A` +
+      `*Office Address:* Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur%0A` +
+      `*Contact:* 8949294370, 7300080475%0A%0A` +
+      `*नोट:*%0A` +
+      `कृपया *7300080475* को अपने फोन के कॉन्टेक्ट लिस्ट में सेव कर लें। यदि आपने इसे सेव नहीं किया है, तो आपको ब्रॉडकास्ट द्वारा संदेश प्राप्त नहीं होंगे।%0A%0A` +
+      `- Quality Education`;
+
+    return `https://wa.me/91${reg.mobile}?text=${message}`;
+  }
+
+  function downloadPDF(index) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const reg = registrations[index];
+
+    doc.setFontSize(18);
+    doc.setTextColor(79, 70, 229);
+    doc.text("Quality Education", 20, 20);
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 0);
+
+    doc.text(`*Name:* ${reg.fullName}`, 20, 40);
+    doc.text(`*Roll Number:* ${reg.rollNumber}`, 20, 50);
+    doc.text(`*Father's Name:* ${reg.fatherName}`, 20, 60);
+    doc.text(`*Mobile Number:* ${reg.mobile}`, 20, 70);
+    doc.text(`*Payment:* ₹${reg.payment}`, 20, 80);
+    doc.text(`*Date:* ${reg.formattedDate}`, 20, 90);
+    doc.text(`*City:* ${reg.city}`, 20, 100);
+    doc.text(`*Test Series:* ${reg.testSeries}`, 20, 110);
+
+    doc.setFontSize(12);
+    doc.text("*Office Address:* Shri Gopal Nagar, Gurjar ki Thadi,", 20, 120);
+    doc.text("Gopalpura Bypass Road, Jaipur", 20, 130);
+    doc.text("*Contact:* 8949294370, 7300080475", 20, 140);
+
+    doc.save(`Receipt_${reg.rollNumber}.pdf`);
+  }
+
+  function deleteReceipt(index) {
+    const deletedRollNumber = registrations[index].rollNumber;
+    registrations.splice(index, 1);
+
+    // Save updated data to localStorage
+    localStorage.setItem('registrations', JSON.stringify(registrations));
+
+    updateRegistrations();
+  }
 </script>
 
 </body>
-    </html>
+          </html>
