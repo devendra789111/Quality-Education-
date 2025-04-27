@@ -1,248 +1,206 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Exam Admit Card Generator</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Form with Admit Card Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
-
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to right, #74ebd5, #acb6e5);
-      min-height: 100vh;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #83a4d4, #b6fbff);
       padding: 20px;
     }
-    .container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.15);
-      max-width: 700px;
-      width: 100%;
-    }
-    h2 {
+    h1, h2 {
       text-align: center;
-      color: #4CAF50;
-      margin-bottom: 20px;
+    }
+    form, #admitCard {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      max-width: 700px;
+      margin: 20px auto;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
     }
     input, select {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 6px;
+      padding: 8px;
+      margin-top: 5px;
       border: 1px solid #ccc;
+      border-radius: 5px;
     }
-    button {
-      width: 100%;
-      padding: 14px;
-      background: #4CAF50;
-      border: none;
+    #admitCard {
+      display: none;
+      margin-top: 30px;
+      text-align: left;
+    }
+    #admitCard img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border: 1px solid #ccc;
+      margin: 10px;
+    }
+    .photo-sign {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #3498db;
       color: white;
-      font-size: 18px;
-      border-radius: 6px;
-      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
     }
-    button:hover {
-      background: #43a047;
-    }
-    .admit-card {
-      display: none;
-      margin-top: 20px;
-      padding: 20px;
-      border: 2px solid #4CAF50;
-      border-radius: 8px;
-      background: #e8f5e9;
+    .btn:hover {
+      background: #2980b9;
     }
     table {
       width: 100%;
-      margin-bottom: 20px;
+      border-collapse: collapse;
+      margin-top: 20px;
     }
-    td {
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
       padding: 8px;
-      vertical-align: top;
-    }
-    img {
-      margin-top: 10px;
-      border: 1px solid #000;
-    }
-    .qr-code {
-      text-align: center;
-      margin-top: 20px;
-    }
-    #loader {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-    }
-    .success-message {
-      display: none;
-      text-align: center;
-      color: green;
-      font-weight: bold;
-      margin-top: 20px;
+      text-align: left;
     }
   </style>
 </head>
+<body><h1>Exam Form</h1><form id="examForm">
+  <label>Name:</label>
+  <input type="text" id="name" required><label>Mobile Number:</label> <input type="text" id="mobile" required>
 
-<body>
+<label>City:</label> <input type="text" id="city" required>
 
-<div class="container">
-  <h2>Exam Form</h2>
+<label>District:</label> <input type="text" id="district" required>
 
-  <input type="text" id="name" placeholder="Enter Full Name" required>
-  <input type="text" id="number" placeholder="Enter Phone Number" required>
-  <input type="text" id="city" placeholder="Enter City" required>
-  <input type="text" id="district" placeholder="Enter District" required>
-  <input type="text" id="state" placeholder="Enter State" required>
-  <input type="file" id="photo" accept="image/*" required>
-  <input type="file" id="sign" accept="image/*" required>
+<label>State:</label> <input type="text" id="state" required>
 
-  <button onclick="generateAdmitCard()">Submit & Generate Admit Card</button>
+<label>Photo Upload:</label> <input type="file" id="photo" accept="image/*" required>
 
-  <div id="loader">
-    <p>Preparing your Admit Card...</p>
-  </div>
+<label>Signature Upload:</label> <input type="file" id="sign" accept="image/*" required>
 
-  <div id="admitCard" class="admit-card">
-    <h2>Admit Card</h2>
+<button type="submit" class="btn">Generate Admit Card</button>
 
-    <table>
-      <tr>
-        <td><b>Roll Number:</b></td>
-        <td id="roll"></td>
-        <td rowspan="5" style="text-align:center;">
-          <img id="previewPhoto" style="width:100px;height:100px;">
-        </td>
-      </tr>
-      <tr>
-        <td><b>Name:</b></td>
-        <td id="s_name"></td>
-      </tr>
-      <tr>
-        <td><b>Phone:</b></td>
-        <td id="s_phone"></td>
-      </tr>
-      <tr>
-        <td><b>City:</b></td>
-        <td id="s_city"></td>
-      </tr>
-      <tr>
-        <td><b>District:</b></td>
-        <td id="s_district"></td>
-      </tr>
-      <tr>
-        <td><b>State:</b></td>
-        <td id="s_state"></td>
-        <td rowspan="2" style="text-align:center;">
-          <img id="previewSign" style="width:120px;height:50px;">
-        </td>
-      </tr>
-      <tr>
-        <td><b>Exam Date:</b></td>
-        <td>15 June 2025</td>
-      </tr>
-      <tr>
-        <td><b>Exam Time:</b></td>
-        <td>10:00 AM</td>
-      </tr>
-      <tr>
-        <td><b>Exam Center:</b></td>
-        <td>Government College, City Center</td>
-      </tr>
-    </table>
-
-    <div class="qr-code">
-      <h4>Scan QR Code for Details</h4>
-      <canvas id="qr"></canvas>
+</form><div id="admitCard">
+  <h2>Admit Card</h2>
+  <div class="photo-sign">
+    <div>
+      <p><strong>Photo:</strong></p>
+      <img id="previewPhoto">
     </div>
-
-    <button onclick="downloadPDF()">Download Admit Card as PDF</button>
-    <div class="success-message" id="successMsg">Admit Card Downloaded Successfully!</div>
+    <div>
+      <p><strong>Sign:</strong></p>
+      <img id="previewSign">
+    </div>
   </div>
-</div>
+  <table>
+    <tr><th>Name</th><td id="acName"></td></tr>
+    <tr><th>Mobile</th><td id="acMobile"></td></tr>
+    <tr><th>City</th><td id="acCity"></td></tr>
+    <tr><th>District</th><td id="acDistrict"></td></tr>
+    <tr><th>State</th><td id="acState"></td></tr>
+    <tr><th>Roll No.</th><td id="acRoll"></td></tr>
+    <tr><th>Exam Date</th><td id="acDate"></td></tr>
+    <tr><th>Exam Time</th><td id="acTime"></td></tr>
+    <tr><th>Exam Center</th><td id="acCenter"></td></tr>
+  </table><button onclick="downloadPDF()" class="btn">Download Admit Card</button>
 
-<script>
-function generateAdmitCard() {
-  let name = document.getElementById('name').value.trim();
-  let number = document.getElementById('number').value.trim();
-  let city = document.getElementById('city').value.trim();
-  let district = document.getElementById('district').value.trim();
-  let state = document.getElementById('state').value.trim();
-  
-  if (!name || !number || !city || !district || !state) {
-    alert("Please fill all the fields properly!");
-    return;
+</div><script>
+function randomRoll() {
+  return Math.floor(100000 + Math.random() * 900000);
+}
+
+function randomDate() {
+  const start = new Date();
+  const end = new Date(2025, 5, 30);
+  const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+  return date.toISOString().split('T')[0];
+}
+
+function randomTime() {
+  const times = ['10:00 AM', '12:00 PM', '02:00 PM', '04:00 PM'];
+  return times[Math.floor(Math.random() * times.length)];
+}
+
+function randomCenter() {
+  const centers = ['Center A', 'Center B', 'Center C', 'Center D'];
+  return centers[Math.floor(Math.random() * centers.length)];
+}
+
+const examForm = document.getElementById('examForm');
+examForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  document.getElementById('acName').innerText = document.getElementById('name').value;
+  document.getElementById('acMobile').innerText = document.getElementById('mobile').value;
+  document.getElementById('acCity').innerText = document.getElementById('city').value;
+  document.getElementById('acDistrict').innerText = document.getElementById('district').value;
+  document.getElementById('acState').innerText = document.getElementById('state').value;
+  document.getElementById('acRoll').innerText = randomRoll();
+  document.getElementById('acDate').innerText = randomDate();
+  document.getElementById('acTime').innerText = randomTime();
+  document.getElementById('acCenter').innerText = randomCenter();
+
+  const photoFile = document.getElementById('photo').files[0];
+  const signFile = document.getElementById('sign').files[0];
+
+  const reader1 = new FileReader();
+  reader1.onload = function(e) {
+    document.getElementById('previewPhoto').src = e.target.result;
   }
+  reader1.readAsDataURL(photoFile);
 
-  document.getElementById('s_name').innerText = name;
-  document.getElementById('s_phone').innerText = number;
-  document.getElementById('s_city').innerText = city;
-  document.getElementById('s_district').innerText = district;
-  document.getElementById('s_state').innerText = state;
-
-  const rollNo = 'EX' + Math.floor(100000 + Math.random() * 900000);
-  document.getElementById('roll').innerText = rollNo;
-
-  const photo = document.getElementById('photo').files[0];
-  const sign = document.getElementById('sign').files[0];
-
-  if(photo) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      document.getElementById('previewPhoto').src = e.target.result;
-    }
-    reader.readAsDataURL(photo);
+  const reader2 = new FileReader();
+  reader2.onload = function(e) {
+    document.getElementById('previewSign').src = e.target.result;
   }
-
-  if(sign) {
-    const reader2 = new FileReader();
-    reader2.onload = function(e) {
-      document.getElementById('previewSign').src = e.target.result;
-    }
-    reader2.readAsDataURL(sign);
-  }
-
-  // Generate QR Code
-  let qr = new QRious({
-    element: document.getElementById('qr'),
-    size: 150,
-    value: `Roll No: ${rollNo}\nName: ${name}\nCity: ${city}\nExam Date: 15 June 2025\nCenter: Government College`
-  });
+  reader2.readAsDataURL(signFile);
 
   document.getElementById('admitCard').style.display = 'block';
-}
+});
 
 function downloadPDF() {
-  document.getElementById('loader').style.display = 'block';
-  var element = document.getElementById('admitCard');
+  const element = document.getElementById('admitCard');
 
-  var opt = {
-    margin:       0.5,
-    filename:     'Admit_Card.pdf',
-    image:        { type: 'jpeg', quality: 1 },
-    html2canvas:  { scale: 4, useCORS: true },
-    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+  const imagesLoaded = () => {
+    return new Promise((resolve) => {
+      let total = 2, count = 0;
+      function check() {
+        count++;
+        if (count === total) resolve();
+      }
+
+      const photo = document.getElementById('previewPhoto');
+      const sign = document.getElementById('previewSign');
+
+      if (photo.complete) { check(); } else { photo.onload = check; }
+      if (sign.complete) { check(); } else { sign.onload = check; }
+    });
   };
 
-  setTimeout(() => {
-    html2pdf().from(element).set(opt).save().then(() => {
-      document.getElementById('loader').style.display = 'none';
-      document.getElementById('successMsg').style.display = 'block';
-      setTimeout(() => {
-        document.getElementById('successMsg').style.display = 'none';
-      }, 3000);
-    });
-  }, 500); // थोड़ा time देकर ताकि images load हो जाएं
-}
-</script>
+  imagesLoaded().then(() => {
+    var opt = {
+      margin: 0.5,
+      filename: 'Admit_Card.pdf',
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { scale: 4 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
 
-</body>
-                               </html>
+    html2pdf().from(element).set(opt).save();
+  });
+}
+</script></body>
+  </html>
