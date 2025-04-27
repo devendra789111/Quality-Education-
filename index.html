@@ -6,6 +6,32 @@
     <title>Registration Form to PDF</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .receipt-preview {
+            background-color: #f7f7f7;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .receipt-header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4F4A75;
+        }
+        .receipt-content {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+        .receipt-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-r from-blue-400 to-purple-500 min-h-screen flex items-center justify-center">
 
@@ -42,19 +68,26 @@
             </select>
         </div>
 
-        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition duration-300">
-            Generate Receipt and Download PDF
+        <button type="button" id="showReceiptBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition duration-300">
+            Show Receipt Preview
         </button>
     </form>
+
+    <!-- Receipt Preview Section -->
+    <div id="receiptPreview" class="receipt-preview hidden">
+        <div class="receipt-header">Company XYZ</div>
+        <div class="receipt-content" id="receiptContent">
+            <!-- Dynamic content will appear here -->
+        </div>
+        <div class="receipt-footer">Company Address: XYZ Road, City | Contact: 123-456-7890</div>
+        <button id="downloadPdfBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition duration-300 mt-4">
+            Download PDF
+        </button>
+    </div>
 </div>
 
 <script>
-    document.getElementById('registrationForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
+    document.getElementById('showReceiptBtn').addEventListener('click', function () {
         // Collecting form data
         const fullName = document.getElementById('fullName').value;
         const fatherName = document.getElementById('fatherName').value;
@@ -63,33 +96,54 @@
         const date = document.getElementById('date').value;
         const city = document.getElementById('city').value;
 
-        // Generating random roll number using mobile number
-        const rollNumber = Math.floor(Math.random() * 10000) + mobile.slice(-4); // Last 4 digits of mobile number
+        // Generate random 5-digit roll number
+        const rollNumber = Math.floor(10000 + Math.random() * 90000);
 
-        // Receipt
-        doc.setFontSize(18);
-        doc.setTextColor(91, 44, 111);
-        doc.text("Company XYZ", 20, 20);
-        doc.text("Official Receipt", 20, 30);
+        // Set receipt content
+        const receiptContent = `
+            <p><strong>Full Name:</strong> ${fullName}</p>
+            <p><strong>Father's Name:</strong> ${fatherName}</p>
+            <p><strong>Mobile:</strong> ${mobile}</p>
+            <p><strong>Payment:</strong> ${payment}</p>
+            <p><strong>Date:</strong> ${date}</p>
+            <p><strong>City:</strong> ${city}</p>
+            <p><strong>Roll Number:</strong> ${rollNumber}</p>
+        `;
 
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-        doc.text(`Full Name: ${fullName}`, 20, 50);
-        doc.text(`Father's Name: ${fatherName}`, 20, 60);
-        doc.text(`Mobile: ${mobile}`, 20, 70);
-        doc.text(`Payment: ${payment}`, 20, 80);
-        doc.text(`Date: ${date}`, 20, 90);
-        doc.text(`City: ${city}`, 20, 100);
-        doc.text(`Roll Number: ${rollNumber}`, 20, 110);
+        // Display the receipt preview
+        document.getElementById('receiptContent').innerHTML = receiptContent;
+        document.getElementById('receiptPreview').classList.remove('hidden');
+        
+        // Enable download button
+        document.getElementById('downloadPdfBtn').addEventListener('click', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
 
-        // Footer with company details
-        doc.text("Company Address: XYZ Road, City", 20, 130);
-        doc.text("Contact: 123-456-7890", 20, 140);
+            // Generate PDF
+            doc.setFontSize(18);
+            doc.setTextColor(91, 44, 111);
+            doc.text("Company XYZ", 20, 20);
+            doc.text("Official Receipt", 20, 30);
 
-        // Generate PDF file with receipt data
-        doc.save('Receipt_Registration.pdf');
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Full Name: ${fullName}`, 20, 40);
+            doc.text(`Father's Name: ${fatherName}`, 20, 50);
+            doc.text(`Mobile: ${mobile}`, 20, 60);
+            doc.text(`Payment: ${payment}`, 20, 70);
+            doc.text(`Date: ${date}`, 20, 80);
+            doc.text(`City: ${city}`, 20, 90);
+            doc.text(`Roll Number: ${rollNumber}`, 20, 100);
+
+            // Footer with company details
+            doc.text("Company Address: XYZ Road, City", 20, 120);
+            doc.text("Contact: 123-456-7890", 20, 130);
+
+            // Save PDF
+            doc.save('Receipt_Registration.pdf');
+        });
     });
 </script>
 
 </body>
-</html>
+    </html>
