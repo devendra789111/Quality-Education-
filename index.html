@@ -3,47 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Exam Admit Card with QR Code</title>
+  <title>Exam Admit Card Generator</title>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background: #f2f2f2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #74ebd5, #acb6e5);
       min-height: 100vh;
       margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
     .container {
-      background: white;
+      background: #fff;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      width: 90%;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.15);
       max-width: 700px;
+      width: 100%;
+    }
+    h2 {
+      text-align: center;
+      color: #4CAF50;
+      margin-bottom: 20px;
     }
     input, select {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin: 10px 0;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      border-radius: 5px;
     }
     button {
       width: 100%;
+      padding: 14px;
       background: #4CAF50;
-      color: white;
-      padding: 12px;
-      margin-top: 10px;
-      font-size: 16px;
       border: none;
-      border-radius: 5px;
+      color: white;
+      font-size: 18px;
+      border-radius: 6px;
+      margin-top: 10px;
       cursor: pointer;
     }
     button:hover {
-      background: #45a049;
+      background: #43a047;
     }
     .admit-card {
       display: none;
@@ -55,7 +63,6 @@
     }
     table {
       width: 100%;
-      border-collapse: collapse;
       margin-bottom: 20px;
     }
     td {
@@ -63,32 +70,50 @@
       vertical-align: top;
     }
     img {
-      border: 1px solid #333;
       margin-top: 10px;
+      border: 1px solid #000;
     }
     .qr-code {
       text-align: center;
       margin-top: 20px;
     }
+    #loader {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .success-message {
+      display: none;
+      text-align: center;
+      color: green;
+      font-weight: bold;
+      margin-top: 20px;
+    }
   </style>
 </head>
+
 <body>
 
 <div class="container">
-  <h2 style="text-align:center;color:#4CAF50;">Exam Form</h2>
+  <h2>Exam Form</h2>
 
-  <input type="text" id="name" placeholder="Enter Full Name">
-  <input type="text" id="number" placeholder="Enter Phone Number">
-  <input type="text" id="city" placeholder="Enter City">
-  <input type="text" id="district" placeholder="Enter District">
-  <input type="text" id="state" placeholder="Enter State">
-  <input type="file" id="photo" accept="image/*">
-  <input type="file" id="sign" accept="image/*">
+  <input type="text" id="name" placeholder="Enter Full Name" required>
+  <input type="text" id="number" placeholder="Enter Phone Number" required>
+  <input type="text" id="city" placeholder="Enter City" required>
+  <input type="text" id="district" placeholder="Enter District" required>
+  <input type="text" id="state" placeholder="Enter State" required>
+  <input type="file" id="photo" accept="image/*" required>
+  <input type="file" id="sign" accept="image/*" required>
 
   <button onclick="generateAdmitCard()">Submit & Generate Admit Card</button>
 
+  <div id="loader">
+    <p>Preparing your Admit Card...</p>
+  </div>
+
   <div id="admitCard" class="admit-card">
-    <h2 style="text-align:center;">Admit Card</h2>
+    <h2>Admit Card</h2>
+
     <table>
       <tr>
         <td><b>Roll Number:</b></td>
@@ -102,7 +127,7 @@
         <td id="s_name"></td>
       </tr>
       <tr>
-        <td><b>Phone Number:</b></td>
+        <td><b>Phone:</b></td>
         <td id="s_phone"></td>
       </tr>
       <tr>
@@ -127,12 +152,10 @@
       <tr>
         <td><b>Exam Time:</b></td>
         <td>10:00 AM</td>
-        <td></td>
       </tr>
       <tr>
         <td><b>Exam Center:</b></td>
         <td>Government College, City Center</td>
-        <td></td>
       </tr>
     </table>
 
@@ -141,22 +164,21 @@
       <canvas id="qr"></canvas>
     </div>
 
-    <div style="text-align:center;">
-      <button onclick="downloadPDF()">Download Admit Card as PDF</button>
-    </div>
+    <button onclick="downloadPDF()">Download Admit Card as PDF</button>
+    <div class="success-message" id="successMsg">Admit Card Downloaded Successfully!</div>
   </div>
 </div>
 
 <script>
 function generateAdmitCard() {
-  let name = document.getElementById('name').value;
-  let number = document.getElementById('number').value;
-  let city = document.getElementById('city').value;
-  let district = document.getElementById('district').value;
-  let state = document.getElementById('state').value;
+  let name = document.getElementById('name').value.trim();
+  let number = document.getElementById('number').value.trim();
+  let city = document.getElementById('city').value.trim();
+  let district = document.getElementById('district').value.trim();
+  let state = document.getElementById('state').value.trim();
   
-  if(!name || !number || !city || !district || !state) {
-    alert("Please fill all the fields!");
+  if (!name || !number || !city || !district || !state) {
+    alert("Please fill all the fields properly!");
     return;
   }
 
@@ -199,10 +221,28 @@ function generateAdmitCard() {
 }
 
 function downloadPDF() {
+  document.getElementById('loader').style.display = 'block';
   var element = document.getElementById('admitCard');
-  html2pdf().from(element).save('Admit_Card.pdf');
+
+  var opt = {
+    margin:       0.5,
+    filename:     'Admit_Card.pdf',
+    image:        { type: 'jpeg', quality: 1 },
+    html2canvas:  { scale: 4, useCORS: true },
+    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+
+  setTimeout(() => {
+    html2pdf().from(element).set(opt).save().then(() => {
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('successMsg').style.display = 'none';
+      }, 3000);
+    });
+  }, 500); // थोड़ा time देकर ताकि images load हो जाएं
 }
 </script>
 
 </body>
-</html>
+                               </html>
