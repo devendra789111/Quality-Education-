@@ -105,15 +105,15 @@
       receipt.innerHTML = `
         <div class="receipt-header">Quality Education</div>
         <div class="mt-4 text-sm text-gray-800">
+          <p><strong>Name:</strong> ${reg.fullName}</p>
           <p><strong>Roll Number:</strong> ${reg.rollNumber}</p>
-          <p><strong>Full Name:</strong> ${reg.fullName}</p>
           <p><strong>Father's Name:</strong> ${reg.fatherName}</p>
           <p><strong>Mobile Number:</strong> ${reg.mobile}</p>
           <p><strong>Payment:</strong> ₹${reg.payment}</p>
           <p><strong>Date:</strong> ${reg.formattedDate}</p>
           <p><strong>City:</strong> ${reg.city}</p>
         </div>
-        <div class="receipt-footer">Office Address: Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur | Contact: 8949294370, 7300080475</div>
+        <div class="receipt-footer"><strong>Office Address:</strong> Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur | <strong>Contact:</strong> 8949294370, 7300080475</div>
         <div class="flex justify-between mt-4">
           <button onclick="downloadPDF(${index})" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Download PDF</button>
           <a href="${generateWhatsAppLink(reg)}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-xl flex items-center"><i class="fab fa-whatsapp mr-2"></i>Send WhatsApp</a>
@@ -125,14 +125,16 @@
 
   function generateWhatsAppLink(reg) {
     const message = `Hello *${reg.fullName}*,%0A%0A` +
-      `Roll Number: *${reg.rollNumber}*%0A` +
-      `Father's Name: *${reg.fatherName}*%0A` +
-      `Mobile Number: *${reg.mobile}*%0A` +
-      `Payment: *₹${reg.payment}*%0A` +
-      `Date: *${reg.formattedDate}*%0A` +
-      `City: *${reg.city}*%0A%0A` +
-      `*Office Address:*%0AShri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur%0AContact: 8949294370, 7300080475%0A%0A` +
-      `*नोट:*%0Aकृपया *7300080475* को अपने फोन के कॉन्टेक्ट लिस्ट में सेव कर लें। यदि आपने इसे सेव नहीं किया है, तो आपको ब्रॉडकास्ट द्वारा संदेश प्राप्त नहीं होंगे।%0A%0A` +
+      `*Roll Number:* ${reg.rollNumber}%0A` +
+      `*Father's Name:* ${reg.fatherName}%0A` +
+      `*Mobile Number:* ${reg.mobile}%0A` +
+      `*Payment:* ₹${reg.payment}%0A` +
+      `*Date:* ${reg.formattedDate}%0A` +
+      `*City:* ${reg.city}%0A%0A` +
+      `*Office Address:* Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur%0A` +
+      `*Contact:* 8949294370, 7300080475%0A%0A` +
+      `*नोट:*%0A` +
+      `कृपया *7300080475* को अपने फोन के कॉन्टेक्ट लिस्ट में सेव कर लें। यदि आपने इसे सेव नहीं किया है, तो आपको ब्रॉडकास्ट द्वारा संदेश प्राप्त नहीं होंगे।%0A%0A` +
       `- Quality Education`;
 
     return `https://wa.me/91${reg.mobile}?text=${message}`;
@@ -150,18 +152,18 @@
     doc.setFontSize(14);
     doc.setTextColor(0, 0, 0);
 
-    doc.text(`Roll Number: ${reg.rollNumber}`, 20, 40);
-    doc.text(`Full Name: ${reg.fullName}`, 20, 50);
-    doc.text(`Father's Name: ${reg.fatherName}`, 20, 60);
-    doc.text(`Mobile Number: ${reg.mobile}`, 20, 70);
-    doc.text(`Payment: ₹${reg.payment}`, 20, 80);
-    doc.text(`Date: ${reg.formattedDate}`, 20, 90);
-    doc.text(`City: ${reg.city}`, 20, 100);
+    doc.text(`*Name:* ${reg.fullName}`, 20, 40);
+    doc.text(`*Roll Number:* ${reg.rollNumber}`, 20, 50);
+    doc.text(`*Father's Name:* ${reg.fatherName}`, 20, 60);
+    doc.text(`*Mobile Number:* ${reg.mobile}`, 20, 70);
+    doc.text(`*Payment:* ₹${reg.payment}`, 20, 80);
+    doc.text(`*Date:* ${reg.formattedDate}`, 20, 90);
+    doc.text(`*City:* ${reg.city}`, 20, 100);
 
     doc.setFontSize(12);
-    doc.text("Office Address: Shri Gopal Nagar, Gurjar ki Thadi,", 20, 120);
+    doc.text("*Office Address:* Shri Gopal Nagar, Gurjar ki Thadi,", 20, 120);
     doc.text("Gopalpura Bypass Road, Jaipur", 20, 130);
-    doc.text("Contact: 8949294370, 7300080475", 20, 140);
+    doc.text("*Contact:* 8949294370, 7300080475", 20, 140);
 
     doc.save(`Receipt_${reg.rollNumber}.pdf`);
   }
