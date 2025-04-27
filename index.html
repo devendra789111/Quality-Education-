@@ -80,12 +80,27 @@
     const dateRaw = document.getElementById('date').value;
     const city = document.getElementById('city').value;
 
-    const rollNumber = startingRollNumber + registrations.length;
+    // Check if mobile number already exists
+    const existingRegistration = registrations.find(reg => reg.mobile === mobile);
+
+    let rollNumber;
+    if (existingRegistration) {
+      rollNumber = existingRegistration.rollNumber; // Keep the same roll number if mobile exists
+    } else {
+      rollNumber = startingRollNumber + registrations.length;
+    }
+
     const dateParts = dateRaw.split("-");
     const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
 
     const newRegistration = { fullName, fatherName, mobile, payment, formattedDate, city, rollNumber };
-    registrations.push(newRegistration);
+    if (!existingRegistration) {
+      registrations.push(newRegistration);
+    } else {
+      // Update existing registration
+      const index = registrations.indexOf(existingRegistration);
+      registrations[index] = newRegistration;
+    }
 
     // Save to localStorage
     localStorage.setItem('registrations', JSON.stringify(registrations));
@@ -117,6 +132,7 @@
         <div class="flex justify-between mt-4">
           <button onclick="downloadPDF(${index})" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Download PDF</button>
           <a href="${generateWhatsAppLink(reg)}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-xl flex items-center"><i class="fab fa-whatsapp mr-2"></i>Send WhatsApp</a>
+          <button onclick="deleteReceipt(${index})" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-xl">Delete</button>
         </div>
       `;
       receiptsDiv.appendChild(receipt);
@@ -166,6 +182,23 @@
     doc.text("*Contact:* 8949294370, 7300080475", 20, 140);
 
     doc.save(`Receipt_${reg.rollNumber}.pdf`);
+  }
+
+  function deleteReceipt(index) {
+    const deletedRollNumber = registrations[index].rollNumber;
+    registrations.splice(index, 1);
+
+    // Reassign the deleted roll number to the next registration
+    registrations.forEach((reg, i) => {
+      if (reg.rollNumber > deletedRollNumber) {
+        reg.rollNumber--;
+      }
+    });
+
+    // Save updated data to localStorage
+    localStorage.setItem('registrations', JSON.stringify(registrations));
+
+    updateRegistrations();
   }
 </script>
 
