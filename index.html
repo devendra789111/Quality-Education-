@@ -1,149 +1,124 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Form to PDF</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .receipt-preview {
-            background-color: #f7f7f7;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-        .receipt-header {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #4F4A75;
-        }
-        .receipt-content {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #333;
-        }
-        .receipt-footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #999;
-        }
-    </style>
-</head>
-<body class="bg-gradient-to-r from-blue-400 to-purple-500 min-h-screen flex items-center justify-center">
-
-<div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg">
-    <h1 class="text-3xl font-bold text-center text-purple-700 mb-8">Registration Form</h1>
-    <form id="registrationForm" class="space-y-6">
-        <div>
-            <label class="block mb-2 text-sm font-medium text-gray-700">Full Name</label>
-            <input type="text" id="fullName" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-        </div>
-        <div>
-            <label class="block mb-2 text-sm font-medium text-gray-700">Father's Name</label>
-            <input type="text" id="fatherName" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-        </div>
-        <div>
-            <label class="block mb-2 text-sm font-medium text-gray-700">Mobile Number</label>
-            <input type="text" id="mobile" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-        </div>
-        <div>
-            <label class="block mb-2 text-sm font-medium text-gray-700">Payment</label>
-            <input type="text" id="payment" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-        </div>
-        <div>
-            <label class="block mb-2 text-sm font-medium text-gray-700">Date</label>
-            <input type="date" id="date" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-        </div>
-        <div>
-            <label class="block mb-2 text-sm font-medium text-gray-700">City</label>
-            <select id="city" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-                <option value="Jaipur">Jaipur</option>
-                <option value="Jodhpur">Jodhpur</option>
-                <option value="Ajmer">Ajmer</option>
-                <option value="Bikaner">Bikaner</option>
-            </select>
-        </div>
-
-        <button type="button" id="showReceiptBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition duration-300">
-            Show Receipt Preview
-        </button>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quality Education Registration</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .receipt {
+      background: #f7f7f7;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .receipt-header {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #4F46E5;
+    }
+    .receipt-footer {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
+    }
+  </style>
+</head><body class="bg-gradient-to-r from-blue-400 to-purple-500 min-h-screen p-6"><div class="max-w-4xl mx-auto">  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-white">Registration Form</h1>
+    <div class="text-white font-bold">Total Registrations: <span id="totalRegistrations">0</span></div>
+  </div>  <div class="bg-white p-8 rounded-2xl shadow-2xl mb-8">
+    <form id="registrationForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <input type="text" id="fullName" placeholder="Full Name" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+      <input type="text" id="fatherName" placeholder="Father's Name" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+      <input type="text" id="mobile" placeholder="Mobile Number" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+      <input type="text" id="payment" placeholder="Payment" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+      <input type="date" id="date" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+      <select id="city" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+        <option value="">Select City</option>
+        <option value="Jaipur">Jaipur</option>
+        <option value="Jodhpur">Jodhpur</option>
+        <option value="Ajmer">Ajmer</option>
+        <option value="Bikaner">Bikaner</option>
+      </select>
+      <button type="submit" class="col-span-1 md:col-span-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition duration-300">Add Entry</button>
     </form>
+  </div>  <div id="receipts"></div></div><script>
+  let registrations = [];
 
-    <!-- Receipt Preview Section -->
-    <div id="receiptPreview" class="receipt-preview hidden">
+  document.getElementById('registrationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const fullName = document.getElementById('fullName').value;
+    const fatherName = document.getElementById('fatherName').value;
+    const mobile = document.getElementById('mobile').value;
+    const payment = document.getElementById('payment').value;
+    const date = document.getElementById('date').value;
+    const city = document.getElementById('city').value;
+
+    const rollNumber = (registrations.length + 1).toString().padStart(5, '0');
+
+    const newRegistration = { fullName, fatherName, mobile, payment, date, city, rollNumber };
+    registrations.push(newRegistration);
+
+    document.getElementById('registrationForm').reset();
+    updateRegistrations();
+  });
+
+  function updateRegistrations() {
+    const receiptsDiv = document.getElementById('receipts');
+    receiptsDiv.innerHTML = '';
+    document.getElementById('totalRegistrations').innerText = registrations.length;
+
+    registrations.forEach((reg, index) => {
+      const receipt = document.createElement('div');
+      receipt.className = 'receipt';
+      receipt.innerHTML = `
         <div class="receipt-header">Quality Education</div>
-        <div class="receipt-content" id="receiptContent">
-            <!-- Dynamic content will appear here -->
+        <div class="mt-4 text-sm text-gray-800">
+          <p><strong>Roll Number:</strong> ${reg.rollNumber}</p>
+          <p><strong>Full Name:</strong> ${reg.fullName}</p>
+          <p><strong>Father's Name:</strong> ${reg.fatherName}</p>
+          <p><strong>Mobile Number:</strong> ${reg.mobile}</p>
+          <p><strong>Payment:</strong> ${reg.payment}</p>
+          <p><strong>Date:</strong> ${reg.date}</p>
+          <p><strong>City:</strong> ${reg.city}</p>
         </div>
-        <div class="receipt-footer">Office Address: Shree Gopal Nagar,Gopalpura Bypass Road, Jaipur | Contact: 8949294370, 7300080475</div>
-        <button id="downloadPdfBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition duration-300 mt-4">
-            Download PDF
-        </button>
-    </div>
-</div>
-
-<script>
-    document.getElementById('showReceiptBtn').addEventListener('click', function () {
-        // Collecting form data
-        const fullName = document.getElementById('fullName').value;
-        const fatherName = document.getElementById('fatherName').value;
-        const mobile = document.getElementById('mobile').value;
-        const payment = document.getElementById('payment').value;
-        const date = document.getElementById('date').value;
-        const city = document.getElementById('city').value;
-
-        // Generate random 5-digit roll number
-        const rollNumber = Math.floor(10000 + Math.random() * 90000);
-
-        // Set receipt content
-        const receiptContent = `
-            <p><strong>Full Name:</strong> ${fullName}</p>
-            <p><strong>Father's Name:</strong> ${fatherName}</p>
-            <p><strong>Mobile:</strong> ${mobile}</p>
-            <p><strong>Payment:</strong> ${payment}</p>
-            <p><strong>Date:</strong> ${date}</p>
-            <p><strong>City:</strong> ${city}</p>
-            <p><strong>Roll Number:</strong> ${rollNumber}</p>
-        `;
-
-        // Display the receipt preview
-        document.getElementById('receiptContent').innerHTML = receiptContent;
-        document.getElementById('receiptPreview').classList.remove('hidden');
-        
-        // Enable download button
-        document.getElementById('downloadPdfBtn').addEventListener('click', function () {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            // Generate PDF
-            doc.setFontSize(18);
-            doc.setTextColor(91, 44, 111);
-            doc.text("Quality Education", 20, 20);
-            doc.text("Test Series Payment Receipt", 20, 30);
-
-            doc.setFontSize(12);
-            doc.setTextColor(0, 0, 0);
-            doc.text(`Full Name: ${fullName}`, 20, 40);
-            doc.text(`Father's Name: ${fatherName}`, 20, 50);
-            doc.text(`Mobile: ${mobile}`, 20, 60);
-            doc.text(`Payment: ${payment}`, 20, 70);
-            doc.text(`Date: ${date}`, 20, 80);
-            doc.text(`City: ${city}`, 20, 90);
-            doc.text(`Roll Number: ${rollNumber}`, 20, 100);
-
-            // Footer with company details
-            doc.text("Company Address: XYZ Road, City", 20, 120);
-            doc.text("Contact: 123-456-7890", 20, 130);
-
-            // Save PDF
-            doc.save('Receipt_Registration.pdf');
-        });
+        <div class="receipt-footer">Office Address: Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur | Contact: 8949294370, 7300080475</div>
+        <button onclick="downloadPDF(${index})" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-xl">Download PDF</button>
+      `;
+      receiptsDiv.appendChild(receipt);
     });
-</script>
+  }
 
-</body>
-    </html>
+  function downloadPDF(index) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const reg = registrations[index];
+
+    doc.setFontSize(18);
+    doc.setTextColor(79, 70, 229);
+    doc.text("Quality Education", 20, 20);
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 0);
+
+    doc.text(`Roll Number: ${reg.rollNumber}`, 20, 40);
+    doc.text(`Full Name: ${reg.fullName}`, 20, 50);
+    doc.text(`Father's Name: ${reg.fatherName}`, 20, 60);
+    doc.text(`Mobile Number: ${reg.mobile}`, 20, 70);
+    doc.text(`Payment: ${reg.payment}`, 20, 80);
+    doc.text(`Date: ${reg.date}`, 20, 90);
+    doc.text(`City: ${reg.city}`, 20, 100);
+
+    doc.setFontSize(12);
+    doc.text("Office Address: Shri Gopal Nagar, Gurjar ki Thadi,", 20, 120);
+    doc.text("Gopalpura Bypass Road, Jaipur", 20, 130);
+    doc.text("Contact: 8949294370, 7300080475", 20, 140);
+
+    doc.save(`Receipt_${reg.rollNumber}.pdf`);
+  }
+</script></body>
+</html>
