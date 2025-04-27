@@ -5,6 +5,7 @@
   <title>Quality Education Registration</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <style>
     .receipt {
       background: #f7f7f7;
@@ -47,6 +48,7 @@
     </form>
   </div>  <div id="receipts"></div></div><script>
   let registrations = [];
+  let startingRollNumber = 11701;
 
   document.getElementById('registrationForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -58,7 +60,7 @@
     const date = document.getElementById('date').value;
     const city = document.getElementById('city').value;
 
-    const rollNumber = (registrations.length + 1).toString().padStart(5, '0');
+    const rollNumber = startingRollNumber + registrations.length;
 
     const newRegistration = { fullName, fatherName, mobile, payment, date, city, rollNumber };
     registrations.push(newRegistration);
@@ -87,7 +89,10 @@
           <p><strong>City:</strong> ${reg.city}</p>
         </div>
         <div class="receipt-footer">Office Address: Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur | Contact: 8949294370, 7300080475</div>
-        <button onclick="downloadPDF(${index})" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-xl">Download PDF</button>
+        <div class="flex justify-between mt-4">
+          <button onclick="downloadPDF(${index})" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl">Download PDF</button>
+          <a href="https://wa.me/91${reg.mobile}?text=Hello%20${encodeURIComponent(reg.fullName)},%20your%20Roll%20No%20${reg.rollNumber}%20has%20been%20successfully%20registered%20at%20${reg.city}.%20-%20Quality%20Education" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-xl flex items-center"><i class="fab fa-whatsapp mr-2"></i>Send WhatsApp</a>
+        </div>
       `;
       receiptsDiv.appendChild(receipt);
     });
