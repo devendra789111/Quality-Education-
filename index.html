@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Form to PDF Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form to PDF</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -16,50 +17,77 @@
             <input type="text" id="fullName" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
         </div>
         <div>
-            <label class="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
-            <input type="email" id="email" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+            <label class="block mb-2 text-sm font-medium text-gray-700">Father's Name</label>
+            <input type="text" id="fatherName" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
         </div>
         <div>
-            <label class="block mb-2 text-sm font-medium text-gray-700">Phone Number</label>
-            <input type="text" id="phone" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+            <label class="block mb-2 text-sm font-medium text-gray-700">Mobile Number</label>
+            <input type="text" id="mobile" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
         </div>
         <div>
-            <label class="block mb-2 text-sm font-medium text-gray-700">Address</label>
-            <textarea id="address" rows="3" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500"></textarea>
+            <label class="block mb-2 text-sm font-medium text-gray-700">Payment</label>
+            <input type="text" id="payment" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
         </div>
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-700">Date</label>
+            <input type="date" id="date" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+        </div>
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-700">City</label>
+            <select id="city" required class="w-full p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
+                <option value="Jaipur">Jaipur</option>
+                <option value="Jodhpur">Jodhpur</option>
+                <option value="Ajmer">Ajmer</option>
+                <option value="Bikaner">Bikaner</option>
+            </select>
+        </div>
+
         <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition duration-300">
-            Download PDF
+            Generate Receipt and Download PDF
         </button>
     </form>
 </div>
 
 <script>
-    document.getElementById('registrationForm').addEventListener('submit', async function (e) {
+    document.getElementById('registrationForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
+        // Collecting form data
         const fullName = document.getElementById('fullName').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const address = document.getElementById('address').value;
+        const fatherName = document.getElementById('fatherName').value;
+        const mobile = document.getElementById('mobile').value;
+        const payment = document.getElementById('payment').value;
+        const date = document.getElementById('date').value;
+        const city = document.getElementById('city').value;
 
-        doc.setFontSize(22);
+        // Generating random roll number using mobile number
+        const rollNumber = Math.floor(Math.random() * 10000) + mobile.slice(-4); // Last 4 digits of mobile number
+
+        // Receipt
+        doc.setFontSize(18);
         doc.setTextColor(91, 44, 111);
-        doc.text("Registration Details", 20, 20);
+        doc.text("Company XYZ", 20, 20);
+        doc.text("Official Receipt", 20, 30);
 
-        doc.setFontSize(14);
+        doc.setFontSize(12);
         doc.setTextColor(0, 0, 0);
-        doc.text(`Full Name: ${fullName}`, 20, 40);
-        doc.text(`Email: ${email}`, 20, 55);
-        doc.text(`Phone: ${phone}`, 20, 70);
-        doc.text(`Address:`, 20, 85);
+        doc.text(`Full Name: ${fullName}`, 20, 50);
+        doc.text(`Father's Name: ${fatherName}`, 20, 60);
+        doc.text(`Mobile: ${mobile}`, 20, 70);
+        doc.text(`Payment: ${payment}`, 20, 80);
+        doc.text(`Date: ${date}`, 20, 90);
+        doc.text(`City: ${city}`, 20, 100);
+        doc.text(`Roll Number: ${rollNumber}`, 20, 110);
 
-        const splitAddress = doc.splitTextToSize(address, 170);
-        doc.text(splitAddress, 20, 95);
+        // Footer with company details
+        doc.text("Company Address: XYZ Road, City", 20, 130);
+        doc.text("Contact: 123-456-7890", 20, 140);
 
-        doc.save('Registration_Form.pdf');
+        // Generate PDF file with receipt data
+        doc.save('Receipt_Registration.pdf');
     });
 </script>
 
