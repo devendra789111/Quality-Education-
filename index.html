@@ -32,6 +32,10 @@
       padding: 8px 16px;
       margin: 5px;
     }
+    .disabled {
+      background-color: #e0e0e0 !important;
+      cursor: not-allowed !important;
+    }
   </style>
 </head>
 
@@ -61,7 +65,7 @@
       <select id="testSeries" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
         <option value="">Select Test Series</option>
         <option value="Rajasthan Constable Offline Test">Rajasthan Constable Offline Test</option>
-        <option value="Patwar Offline Test">Patwar Offline Test</option>
+        <option value="Patwar Offline Test" class="disabled" disabled>Patwar Offline Test</option>
         <option value="VDO Offline Test">VDO Offline Test</option>
       </select>
       <button type="submit" class="col-span-1 md:col-span-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition duration-300">Add Entry</button>
@@ -74,7 +78,8 @@
 
 <script>
   let registrations = JSON.parse(localStorage.getItem('registrations')) || [];
-  let startingRollNumber = 11701;
+  let startingRollNumberVDO = 11701;
+  let startingRollNumberConstable = 12701;
 
   // Update registrations on page load
   window.onload = function() {
@@ -99,7 +104,11 @@
     if (existingRegistration) {
       rollNumber = existingRegistration.rollNumber; // Keep the same roll number if mobile exists
     } else {
-      rollNumber = startingRollNumber + registrations.length;
+      if (testSeries === 'VDO Offline Test') {
+        rollNumber = startingRollNumberVDO + registrations.filter(reg => reg.testSeries === 'VDO Offline Test').length;
+      } else if (testSeries === 'Rajasthan Constable Offline Test') {
+        rollNumber = startingRollNumberConstable + registrations.filter(reg => reg.testSeries === 'Rajasthan Constable Offline Test').length;
+      }
     }
 
     const dateParts = dateRaw.split("-");
@@ -203,17 +212,12 @@
     const deletedRollNumber = registrations[index].rollNumber;
     registrations.splice(index, 1);
 
-    // Assign deleted roll number to the next registration
-    const newRollNumber = deletedRollNumber;
+    // Reassign the deleted roll number to the next registration
     registrations.forEach((reg, i) => {
-      if (reg.rollNumber >= newRollNumber) {
-        reg.rollNumber++;
+      if (reg.rollNumber >= deletedRollNumber) {
+        reg.rollNumber--;
       }
     });
-
-    // Reassign roll number for new registrations
-    const nextRegistration = { ...registrations[registrations.length - 1], rollNumber: newRollNumber };
-    registrations.push(nextRegistration);
 
     // Save updated data to localStorage
     localStorage.setItem('registrations', JSON.stringify(registrations));
