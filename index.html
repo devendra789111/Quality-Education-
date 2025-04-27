@@ -1,27 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucky Wallet</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lucky Wallet - Add Money</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      text-align: center;
+      width: 300px;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #f5576c;
+    }
+    .wallet-balance {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+    input[type="number"] {
+      width: 90%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #f5576c;
+      color: white;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #d94c5a;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Lucky Wallet</h1>
-        <div class="wallet">
-            Balance: ₹<span id="walletBalance">0</span>
-        </div>
-        <button onclick="addMoney()">Add Money</button>
-        <button onclick="playLottery()">Play Lottery</button>
 
-        <div id="luckyNumberBox" class="hidden">
-            <h2>Opening Lucky Number...</h2>
-            <div id="luckyNumber" class="lucky-number"></div>
-        </div>
-    </div>
+<div class="container">
+  <h1>Lucky Wallet</h1>
+  <div class="wallet-balance">
+    Balance: ₹<span id="walletAmount">0.00</span>
+  </div>
+  <input type="number" id="amountInput" placeholder="Enter Amount ₹">
+  <button id="addMoneyBtn">Add Money via UPI</button>
+</div>
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="script.js"></script>
+<!-- Razorpay Checkout script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  // Load wallet amount from localStorage
+  function loadWallet() {
+    const balance = localStorage.getItem('walletBalance') || 0;
+    document.getElementById('walletAmount').innerText = parseFloat(balance).toFixed(2);
+  }
+
+  // Update wallet amount
+  function updateWallet(amount) {
+    let currentBalance = parseFloat(localStorage.getItem('walletBalance')) || 0;
+    currentBalance += amount;
+    localStorage.setItem('walletBalance', currentBalance.toFixed(2));
+    loadWallet();
+  }
+
+  document.getElementById('addMoneyBtn').addEventListener('click', function() {
+    const amount = parseFloat(document.getElementById('amountInput').value);
+    if (!amount || amount <= 0) {
+      alert("Please enter a valid amount!");
+      return;
+    }
+
+    const options = {
+      "key": "YOUR_RAZORPAY_TEST_KEY", // Yahan apni Razorpay Test Key lagana
+      "amount": amount * 100, // Amount in paise
+      "currency": "INR",
+      "name": "Lucky Wallet",
+      "description": "Wallet Recharge",
+      "handler": function (response){
+        alert("Payment Successful!\nPayment ID: " + response.razorpay_payment_id);
+        updateWallet(amount);
+        document.getElementById('amountInput').value = '';
+      },
+      "prefill": {
+        "name": "Lucky User",
+        "email": "user@example.com",
+        "contact": "9999999999"
+      },
+      "theme": {
+        "color": "#f5576c"
+      }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+  });
+
+  // Initial Load
+  loadWallet();
+</script>
+
 </body>
-</html>
+    </html>
