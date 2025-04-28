@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>राजस्थान चतुर्थ श्रेणी परीक्षा 2025</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -88,7 +89,6 @@
             cursor: pointer;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -256,30 +256,47 @@ function addNewQuestion() {
     const optionD = document.getElementById('option-d').value;
 
     if (questionText && optionA && optionB && optionC && optionD) {
-        // Add the new question to the array
-        questionsArray.push({question: questionText, options: [optionA, optionB, optionC, optionD]});
-        
-        // Save to localStorage
+        questionsArray.push({
+            question: questionText,
+            options: [optionA, optionB, optionC, optionD]
+        });
         localStorage.setItem('questions', JSON.stringify(questionsArray));
 
-        // Clear the inputs
+        // Clear the input fields
         document.getElementById('new-question').value = '';
         document.getElementById('option-a').value = '';
         document.getElementById('option-b').value = '';
         document.getElementById('option-c').value = '';
         document.getElementById('option-d').value = '';
 
-        // Reload the questions
         loadQuestions();
-
-        alert("नया प्रश्न जोड़ दिया गया है!");
     } else {
-        alert("कृपया सभी फ़ील्ड भरें!");
+        alert("कृपया सभी प्रश्न और विकल्प भरें!");
     }
 }
 
 function deleteQuestion(index) {
-    // Remove the question from the questions array
     questionsArray.splice(index, 1);
-    
-    // Save to localStorage
+    localStorage.setItem('questions', JSON.stringify(questionsArray));
+    loadQuestions();
+}
+
+function downloadPDF() {
+    const doc = new jsPDF();
+    doc.setFont("helvetica");
+    doc.text("राजस्थान चतुर्थ श्रेणी परीक्षा 2025", 20, 30);
+
+    // Add questions to PDF
+    questionsArray.forEach((item, index) => {
+        doc.text(`प्रश्न ${index + 1}: ${item.question}`, 20, 40 + (index * 20));
+        item.options.forEach((option, i) => {
+            doc.text(`${String.fromCharCode(65 + i)}. ${option}`, 20, 50 + (index * 20) + (i * 10));
+        });
+    });
+
+    doc.save("question-paper.pdf");
+}
+</script>
+
+</body>
+</html>
