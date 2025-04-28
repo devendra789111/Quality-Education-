@@ -286,12 +286,18 @@ function downloadPDF() {
     doc.setFont("helvetica");
     doc.text("राजस्थान चतुर्थ श्रेणी परीक्षा 2025", 20, 30);
 
+    let yPos = 40; // Starting y position for questions in PDF
     // Add questions to PDF
     questionsArray.forEach((item, index) => {
-        doc.text(`प्रश्न ${index + 1}: ${item.question}`, 20, 40 + (index * 20));
+        doc.text(`प्रश्न ${index + 1}: ${item.question}`, 20, yPos);
+        yPos += 10;
+
         item.options.forEach((option, i) => {
-            doc.text(`${String.fromCharCode(65 + i)}. ${option}`, 20, 50 + (index * 20) + (i * 10));
+            doc.text(`${String.fromCharCode(65 + i)}. ${option}`, 20, yPos);
+            yPos += 10;
         });
+
+        yPos += 5; // Add space between questions
     });
 
     doc.save("question-paper.pdf");
