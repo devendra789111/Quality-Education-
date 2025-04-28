@@ -283,37 +283,3 @@ function deleteQuestion(index) {
     questionsArray.splice(index, 1);
     
     // Save to localStorage
-    localStorage.setItem('questions', JSON.stringify(questionsArray));
-
-    // Reload the questions after deleting
-    loadQuestions();
-
-    alert("प्रश्न हटा दिया गया है!");
-}
-
-function downloadPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    // Remove the delete buttons before downloading
-    const questionsClone = JSON.parse(JSON.stringify(questionsArray));
-
-    // Generate the PDF content
-    doc.text('राजस्थान चतुर्थ श्रेणी परीक्षा 2025', 10, 10);
-    doc.text('निर्देश: सभी प्रश्नों के उत्तर दें। हर प्रश्न के लिए केवल एक सही विकल्प चुनें।', 10, 20);
-    doc.text('समय: 2 घंटे', 10, 30);
-    doc.text('---------------------------------', 10, 40);
-
-    questionsClone.forEach((item, index) => {
-        const yPosition = 50 + (index * 20);
-        doc.text(`प्रश्न ${index + 1}: ${item.question}`, 10, yPosition);
-        doc.text(`A. ${item.options[0]}  B. ${item.options[1]}  C. ${item.options[2]}  D. ${item.options[3]}`, 10, yPosition + 10);
-    });
-
-    // Save the PDF
-    doc.save('rajasthan_chaturth_shreni_pariksha_2025.pdf');
-}
-</script>
-
-</body>
-  </html>
