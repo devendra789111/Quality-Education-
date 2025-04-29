@@ -1,222 +1,147 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quality Education Registration</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <title>Devendra Contact Saver</title>
   <style>
-    .receipt {
-      background: #f7f7f7;
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
+      margin: 0;
+      position: relative;
     }
-    .receipt-header {
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
       text-align: center;
-      font-size: 22px;
+      color: #ffffff;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+    }
+    input {
+      background-color: #f2f2f2;
+      color: #333;
+    }
+    button {
+      background-color: #00d2ff;
+      color: white;
       font-weight: bold;
-      color: #4F46E5;
+      cursor: pointer;
     }
-    .receipt-footer {
-      text-align: center;
-      font-size: 12px;
-      color: #666;
-      margin-top: 10px;
+    button:hover {
+      background-color: #007acc;
     }
-    .receipt-buttons button {
-      font-size: 12px;
-      padding: 8px 16px;
-      margin: 5px;
+    ul {
+      list-style: none;
+      padding: 0;
     }
-    .disabled {
-      background-color: #e0e0e0 !important;
-      cursor: not-allowed !important;
+    li {
+      background: #ffffff22;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .delete-btn {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background-color: #cc0000;
+    }
+    .count-badge {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #ffcc00;
+      color: #333;
+      padding: 10px 15px;
+      border-radius: 30px;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      z-index: 999;
     }
   </style>
 </head>
+<body>
+  <div class="count-badge" id="countBadge">Contacts: 0</div>
+  <div class="container">
+    <h1>Devendra Contact Saver</h1>
+    <input type="text" id="name" placeholder="Contact Name">
+    <input type="text" id="phone" placeholder="Phone Number">
+    <button onclick="addContact()">Add Contact</button>
+    <ul id="contactList"></ul>
+    <button onclick="downloadVCF()">Download VCF File</button>
+  </div>  <script>
+    let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+    const contactList = document.getElementById('contactList');
+    const countBadge = document.getElementById('countBadge');
 
-<body class="bg-gradient-to-r from-blue-400 to-purple-500 min-h-screen p-6">
+    function renderContacts() {
+      contactList.innerHTML = '';
+      contacts.forEach((contact, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `${contact.name} - ${contact.phone} <button class="delete-btn" onclick="deleteContact(${index})">Delete</button>`;
+        contactList.appendChild(li);
+      });
+      updateCount();
+    }
 
-<div class="max-w-4xl mx-auto">
-
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold text-white">Registration Form</h1>
-    <div class="text-white font-bold">Total Registrations: <span id="totalRegistrations">0</span></div>
-  </div>
-
-  <div class="bg-white p-8 rounded-2xl shadow-2xl mb-8">
-    <form id="registrationForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <input type="text" id="fullName" placeholder="Full Name" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-      <input type="text" id="fatherName" placeholder="Father's Name" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-      <input type="text" id="mobile" placeholder="Mobile Number" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-      <input type="text" id="payment" placeholder="Payment Amount" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-      <input type="date" id="date" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-      <select id="city" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-        <option value="">Select City</option>
-        <option value="Jaipur">Jaipur</option>
-        <option value="Jodhpur">Jodhpur</option>
-        <option value="Ajmer">Ajmer</option>
-        <option value="Bikaner">Bikaner</option>
-      </select>
-      <select id="testSeries" required class="p-3 rounded-xl border-2 border-purple-300 focus:outline-none focus:border-purple-500">
-        <option value="">Select Test Series</option>
-        <option value="Rajasthan Constable Offline Test">Rajasthan Constable Offline Test</option>
-        <option value="Patwar Offline Test" class="disabled" disabled>Patwar Offline Test</option>
-        <option value="VDO Offline Test">VDO Offline Test</option>
-      </select>
-      <button type="submit" class="col-span-1 md:col-span-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition duration-300">Add Entry</button>
-    </form>
-  </div>
-
-  <div id="receipts"></div>
-
-</div>
-
-<script>
-  let registrations = JSON.parse(localStorage.getItem('registrations')) || [];
-  let startingRollNumberVDO = 11701;
-  let startingRollNumberConstable = 12701;
-  let rollNumberCountVDO = 0;
-  let rollNumberCountConstable = 0;
-
-  // Update registrations on page load
-  window.onload = function() {
-    updateRegistrations();
-  };
-
-  document.getElementById('registrationForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const fullName = document.getElementById('fullName').value.trim();
-    const fatherName = document.getElementById('fatherName').value.trim();
-    const mobile = document.getElementById('mobile').value.trim();
-    const payment = document.getElementById('payment').value.trim();
-    const dateRaw = document.getElementById('date').value;
-    const city = document.getElementById('city').value;
-    const testSeries = document.getElementById('testSeries').value;
-
-    // Check if mobile number already exists to prevent duplicate registration
-    const existingRegistration = registrations.find(reg => reg.mobile === mobile);
-
-    let rollNumber;
-    if (existingRegistration) {
-      alert('This mobile number is already registered!');
-      return;
-    } else {
-      if (testSeries === 'VDO Offline Test') {
-        rollNumber = startingRollNumberVDO + rollNumberCountVDO;
-        rollNumberCountVDO++;
-      } else if (testSeries === 'Rajasthan Constable Offline Test') {
-        rollNumber = startingRollNumberConstable + rollNumberCountConstable;
-        rollNumberCountConstable++;
+    function addContact() {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      if (name && phone) {
+        contacts.push({ name, phone });
+        localStorage.setItem('contacts', JSON.stringify(contacts));
+        document.getElementById('name').value = '';
+        document.getElementById('phone').value = '';
+        renderContacts();
       }
     }
 
-    const dateParts = dateRaw.split("-");
-    const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+    function deleteContact(index) {
+      contacts.splice(index, 1);
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+      renderContacts();
+    }
 
-    const newRegistration = { fullName, fatherName, mobile, payment, formattedDate, city, testSeries, rollNumber };
-    registrations.push(newRegistration);
+    function downloadVCF() {
+      let vcfData = '';
+      contacts.forEach(contact => {
+        vcfData += `BEGIN:VCARD\nVERSION:3.0\nFN:${contact.name}\nTEL:${contact.phone}\nEND:VCARD\n`;
+      });
+      const blob = new Blob([vcfData], { type: 'text/vcard' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'contacts.vcf';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
 
-    // Save to localStorage
-    localStorage.setItem('registrations', JSON.stringify(registrations));
+    function updateCount() {
+      countBadge.textContent = `Contacts: ${contacts.length}`;
+    }
 
-    document.getElementById('registrationForm').reset();
-    updateRegistrations();
-  });
-
-  function updateRegistrations() {
-    const receiptsDiv = document.getElementById('receipts');
-    receiptsDiv.innerHTML = '';
-    document.getElementById('totalRegistrations').innerText = registrations.length;
-
-    registrations.forEach((reg, index) => {
-      const receipt = document.createElement('div');
-      receipt.className = 'receipt';
-      receipt.innerHTML = `
-        <div class="receipt-header">Quality Education</div>
-        <div class="mt-4 text-sm text-gray-800">
-          <p><strong>Name:</strong> ${reg.fullName}</p>
-          <p><strong>Roll Number:</strong> ${reg.rollNumber}</p>
-          <p><strong>Father's Name:</strong> ${reg.fatherName}</p>
-          <p><strong>Mobile Number:</strong> ${reg.mobile}</p>
-          <p><strong>Payment:</strong> ₹${reg.payment}</p>
-          <p><strong>Date:</strong> ${reg.formattedDate}</p>
-          <p><strong>City:</strong> ${reg.city}</p>
-          <p><strong>Test Series:</strong> ${reg.testSeries}</p>
-        </div>
-        <div class="receipt-footer"><strong>Office Address:</strong> Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur | <strong>Contact:</strong> 8949294370, 7300080475</div>
-        <div class="receipt-buttons">
-          <button onclick="downloadPDF(${index})" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-2 rounded-xl">Download PDF</button>
-          <a href="${generateWhatsAppLink(reg)}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded-xl flex items-center"><i class="fab fa-whatsapp mr-2"></i>Send WhatsApp</a>
-          <button onclick="deleteReceipt(${index})" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-xl">Delete</button>
-        </div>
-      `;
-      receiptsDiv.appendChild(receipt);
-    });
-  }
-
-  function generateWhatsAppLink(reg) {
-    const message = `Hello *${reg.fullName}*,%0A%0A` +
-      `*Roll Number:* ${reg.rollNumber}%0A` +
-      `*Father's Name:* ${reg.fatherName}%0A` +
-      `*Mobile Number:* ${reg.mobile}%0A` +
-      `*Payment:* ₹${reg.payment}%0A` +
-      `*Date:* ${reg.formattedDate}%0A` +
-      `*City:* ${reg.city}%0A` +
-      `*Test Series:* ${reg.testSeries}%0A%0A` +
-      `*Office Address:* Shri Gopal Nagar, Gurjar ki Thadi, Gopalpura Bypass Road, Jaipur%0A` +
-      `*Contact:* 8949294370, 7300080475%0A%0A` +
-      `*नोट:*%0A` +
-      `कृपया *7300080475* को अपने फोन के कॉन्टेक्ट लिस्ट में सेव कर लें। यदि आपने इसे सेव नहीं किया है, तो आपको ब्रॉडकास्ट द्वारा संदेश प्राप्त नहीं होंगे।%0A%0A` +
-      `- Quality Education`;
-
-    return `https://wa.me/91${reg.mobile}?text=${message}`;
-  }
-
-  function downloadPDF(index) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    const reg = registrations[index];
-
-    doc.setFontSize(18);
-    doc.setTextColor(79, 70, 229);
-    doc.text("Quality Education", 20, 20);
-    doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0);
-
-    doc.text(`*Name:* ${reg.fullName}`, 20, 40);
-    doc.text(`*Roll Number:* ${reg.rollNumber}`, 20, 50);
-    doc.text(`*Father's Name:* ${reg.fatherName}`, 20, 60);
-    doc.text(`*Mobile Number:* ${reg.mobile}`, 20, 70);
-    doc.text(`*Payment:* ₹${reg.payment}`, 20, 80);
-    doc.text(`*Date:* ${reg.formattedDate}`, 20, 90);
-    doc.text(`*City:* ${reg.city}`, 20, 100);
-    doc.text(`*Test Series:* ${reg.testSeries}`, 20, 110);
-
-    doc.setFontSize(12);
-    doc.text("*Office Address:* Shri Gopal Nagar, Gurjar ki Thadi,", 20, 120);
-    doc.text("Gopalpura Bypass Road, Jaipur", 20, 130);
-    doc.text("*Contact:* 8949294370, 7300080475", 20, 140);
-
-    doc.save(`Receipt_${reg.rollNumber}.pdf`);
-  }
-
-  function deleteReceipt(index) {
-    const deletedRollNumber = registrations[index].rollNumber;
-    registrations.splice(index, 1);
-
-    // Save updated data to localStorage
-    localStorage.setItem('registrations', JSON.stringify(registrations));
-
-    updateRegistrations();
-  }
-</script>
-
-</body>
+    renderContacts();
+  </script></body>
 </html>
